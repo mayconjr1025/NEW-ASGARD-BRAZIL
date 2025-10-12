@@ -1,78 +1,110 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>New Asgard — Painel de Guerra com Simulador</title>
 <style>
 :root{
   --bg:#0b1220; --accent:#0b63d1; --accent-2:#ffd166;
   --muted:#a7b0c2; --text:#fff; --glass:rgba(255,255,255,0.03);
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{
-  margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:linear-gradient(180deg,#071022 0%, #08132a 100%); color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:linear-gradient(180deg,#071022 0%, #08132a 100%);
+  color:var(--text);
 }
 .topbar{
   display:flex;gap:16px;align-items:center;justify-content:space-between;
-  padding:12px 20px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-bottom:1px solid rgba(255,255,255,0.04); position:sticky;top:0;z-index:30;
+  padding:12px 20px;
+  background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  position:sticky;top:0;z-index:30;
 }
 .brand{display:flex;align-items:center;gap:12px}
 .brand img{width:44px;height:44px;border-radius:8px;object-fit:cover}
 .brand h1{margin:0;color:var(--accent);font-size:18px}
 .searchbar{flex:1;max-width:720px}
-.searchbar input{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:var(--text)}
+.searchbar input{
+  width:100%;padding:10px;border-radius:12px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:var(--glass);color:var(--text)
+}
 
-.layout{display:grid;grid-template-columns:300px 1fr 340px;gap:18px;padding:18px;align-items:start}
+.layout{
+  display:grid;
+  grid-template-columns:300px 1fr 340px;
+  gap:18px;padding:18px;align-items:start;
+}
 .column{
   background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
   padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
-  min-height:60vh; max-height:calc(100vh - 160px); overflow:auto;
+  min-height:60vh;max-height:calc(100vh - 160px);overflow:auto;
+}
+.teams h2{margin-bottom:8px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em}
+.teams-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.teams-list li{
+  padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  transition:all .12s;
+}
+.teams-list li:hover{transform:translateY(-3px);background:rgba(11,99,209,0.06)}
+.teams-list li.active{
+  background:linear-gradient(90deg, rgba(11,99,209,0.08), rgba(255,209,102,0.03));
+  border:1px solid rgba(11,99,209,0.12)
 }
 
-/* left team list */
-.teams h2{margin:0 0 8px 0;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em}
-.teams-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-.teams-list li{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .12s}
-.teams-list li:hover{transform:translateY(-3px);background:rgba(11,99,209,0.06)}
-.teams-list li.active{background:linear-gradient(90deg, rgba(11,99,209,0.08), rgba(255,209,102,0.03));border:1px solid rgba(11,99,209,0.12)}
-
-/* center area */
 .tabs-left h2{margin:0;color:var(--accent)}
 .tabs-left p{color:var(--muted);margin:6px 0 0;display:flex;align-items:center;gap:12px}
 .tabs-left img{width:40px;height:40px;border-radius:8px;object-fit:cover}
 .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.options-btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);cursor:pointer;transition:all .14s}
+.options-btn{
+  padding:8px 12px;border-radius:10px;
+  border:1px solid rgba(255,255,255,0.04);
+  background:rgba(255,255,255,0.02);
+  cursor:pointer;transition:all .14s;
+}
 .options-btn.active{background:var(--accent);color:#071022;box-shadow:0 8px 20px rgba(11,99,209,0.12)}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+  padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)
+}
 
-/* right area (attackers) */
-.attack-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-.attack-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);transition:all .12s}
+.attack-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.attack-item{
+  display:flex;align-items:center;gap:10px;padding:10px;
+  border-radius:10px;background:rgba(255,255,255,0.02);
+  transition:all .12s
+}
 .attack-item:hover{transform:translateY(-4px)}
 .attacker-name{font-weight:700}
 .percent{margin-left:auto;padding:6px 10px;border-radius:999px;font-weight:800}
 .percent.high{background:linear-gradient(90deg,#2ecc71,#27ae60);color:#071022}
 .percent.medium{background:linear-gradient(90deg,#ffd166,#ffb86b);color:#071022}
 .percent.low{background:linear-gradient(90deg,#f75555,#d64545);color:#071022}
-
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.button{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);cursor:pointer}
-.sim-result{margin-top:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
-
 .hint{font-size:13px;color:var(--muted)}
 .fade-in{opacity:0;transform:translateY(8px);animation:fadeIn .36s forwards}
 @keyframes fadeIn{to{opacity:1;transform:none}}
-@media(max-width:1000px){.layout{grid-template-columns:1fr}}
+
+/* RESPONSIVIDADE APRIMORADA */
+@media(max-width:1200px){
+  .layout{grid-template-columns:250px 1fr}
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .topbar{flex-direction:column;align-items:flex-start;gap:10px}
+  .searchbar{width:100%;max-width:none}
+  .column{max-height:none}
+  .brand h1{font-size:16px}
+  .brand img{width:36px;height:36px}
+}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <!-- Logo público válido -->
     <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/7/7d/Thor_Ragnarok_poster.jpg/250px-Thor_Ragnarok_poster.jpg" alt="logo">
     <h1>New Asgard Brazil — Painel de Guerra</h1>
   </div>
@@ -80,39 +112,32 @@ body{
 </header>
 
 <main class="layout">
-  <!-- Defesa (esquerda) -->
   <aside class="column teams">
     <h2>Times — Defesa</h2>
-    <div class="hint">Clique em um time para ver atacantes, porcentagens e simular batalhas.</div>
+    <div class="hint">Clique em um time para ver atacantes e simular batalhas.</div>
     <ul id="teamsList" class="teams-list"></ul>
   </aside>
 
-  <!-- Conteúdo (centro) -->
   <section class="column content">
     <div class="tabs-left fade-in">
-      <h2 id="teamTitle">
-        Selecione um time de defesa
-      </h2>
+      <h2 id="teamTitle">Selecione um time de defesa</h2>
       <p id="teamShort" class="hint">Detalhes e estatísticas aparecerão aqui.</p>
     </div>
 
     <div id="optionsArea" class="options"></div>
-
     <div id="contentArea" class="card fade-in" style="margin-top:10px;">
-      <div id="contentInner">
-        <p class="hint">Selecione um time da coluna da esquerda para começar.</p>
-      </div>
+      <div id="contentInner"><p class="hint">Selecione um time da coluna da esquerda para começar.</p></div>
     </div>
   </section>
 
-  <!-- Ataque (direita) -->
   <aside class="column details">
     <h3>Times que derrotam</h3>
     <div id="teamDetails" class="card">Nenhum time selecionado.</div>
 
     <div style="margin-top:12px" class="card">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <input id="simCount" type="number" value="1000" min="10" style="width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)">
+        <input id="simCount" type="number" value="1000" min="10"
+          style="width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)">
         <button id="sortBtn" class="button">Ordenar atacantes por %</button>
         <button id="simulateBtn" class="button">Simular batalha</button>
       </div>
@@ -121,511 +146,92 @@ body{
   </aside>
 </main>
 
-<footer style="padding:12px 18px;text-align:center;color:var(--muted)"></footer>
+<footer style="padding:12px 18px;text-align:center;color:var(--muted)">
+  © 2025 New Asgard Brazil
+</footer>
 
 <script>
 const teamsData = [
   { id: "vigilantes", name: "Vigilantes", description: "Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[
-    {name:"Iluminati", pct:0},
-    {name:"Fora do Tempo", pct:0},
-    {name:"Liberdade", pct:0},
-    {name:"Aniquiladores e Knul", pct:0}
+    {name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul", pct:0}
   ]},
   { id: "clube_inferno", name: "Clube do Inferno", description: "Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], attackers:[
-    {name:"Submundo e Kestrel", pct:0},
-    {name:"Iluminati", pct:0},
-    {name:"Mercenarios Pagos", pct:0},
-    {name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:0}
+    {name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:0}
   ]}
 ];
-
-const teamsListEl = document.getElementById('teamsList');
-const searchEl = document.getElementById('search');
-const teamTitleEl = document.getElementById('teamTitle');
-const teamShortEl = document.getElementById('teamShort');
-const optionsArea = document.getElementById('optionsArea');
-const contentInner = document.getElementById('contentInner');
-const teamDetailsEl = document.getElementById('teamDetails');
-const sortBtn = document.getElementById('sortBtn');
-const simulateBtn = document.getElementById('simulateBtn');
-const simCountEl = document.getElementById('simCount');
-const simResultEl = document.getElementById('simResult');
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const teamsListEl = $('#teamsList'), searchEl = $('#search'),
+teamTitleEl = $('#teamTitle'), teamShortEl = $('#teamShort'),
+optionsArea = $('#optionsArea'), contentInner = $('#contentInner'),
+teamDetailsEl = $('#teamDetails'), sortBtn = $('#sortBtn'),
+simulateBtn = $('#simulateBtn'), simCountEl = $('#simCount'),
+simResultEl = $('#simResult');
 
 function renderTeams(list){
-  teamsListEl.innerHTML = '';
+  teamsListEl.innerHTML='';
   list.forEach(t=>{
-    const li = document.createElement('li');
-    li.dataset.id = t.id;
-    li.innerHTML = `<div><strong>${t.name}</strong><div style="font-size:12px;color:var(--muted)">${t.members.join(' • ')}</div></div><small>›</small>`;
-    li.addEventListener('click', ()=> selectTeam(t.id));
+    const li=document.createElement('li');
+    li.dataset.id=t.id;
+    li.innerHTML=`<div><strong>${t.name}</strong><div style="font-size:12px;color:var(--muted)">${t.members.join(' • ')}</div></div><small>›</small>`;
+    li.addEventListener('click',()=>selectTeam(t.id));
     teamsListEl.appendChild(li);
   });
 }
-
-let currentTeam = null;
-function clearActive(){
-  document.querySelectorAll('#teamsList li').forEach(i=>i.classList.remove('active'));
-}
+let currentTeam=null;
+function clearActive(){ $$('#teamsList li').forEach(i=>i.classList.remove('active')); }
 function selectTeam(id){
   clearActive();
-  const el = document.querySelector(`#teamsList li[data-id="${id}"]`);
+  const el=$(`#teamsList li[data-id="${id}"]`);
   if(el) el.classList.add('active');
-
-  const team = teamsData.find(t=>t.id===id);
-  if(!team) return;
-  currentTeam = team;
-  
-  // Adiciona imagem do time ao lado do título
-  teamTitleEl.innerHTML = `<img src="${team.image}" alt="${team.name}"> ${team.name}`;
-  teamShortEl.textContent = team.description || 'Sem descrição.';
-  renderOptions(team);
-  renderAttackers(team);
-  showOverview(team);
+  const team=teamsData.find(t=>t.id===id);
+  if(!team)return; currentTeam=team;
+  teamTitleEl.innerHTML=`<img src="${team.image}" alt="${team.name}"> ${team.name}`;
+  teamShortEl.textContent=team.description||'Sem descrição.';
+  renderOptions(team); renderAttackers(team); showOverview(team);
 }
-
 function renderOptions(team){
-  optionsArea.innerHTML = '';
-  const opts = ['Visão Geral','Membros','Estatísticas'];
-  opts.forEach((o,idx)=>{
-    const b = document.createElement('button');
-    b.className='options-btn';
-    b.textContent = o;
-    b.addEventListener('click', ()=>{
-      document.querySelectorAll('.options-btn').forEach(x=>x.classList.remove('active'));
+  optionsArea.innerHTML='';
+  const opts=['Visão Geral','Membros','Estatísticas'];
+  opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='options-btn'; b.textContent=o;
+    b.addEventListener('click',()=>{
+      $$('.options-btn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
-      if(o==='Visão Geral') showOverview(team);
-      if(o==='Membros') showMembers(team);
-      if(o==='Estatísticas') showStats(team);
+      if(o==='Visão Geral')showOverview(team);
+      if(o==='Membros')showMembers(team);
+      if(o==='Estatísticas')showStats(team);
     });
-    if(idx===0) b.classList.add('active');
-    optionsArea.appendChild(b);
+    if(i===0)b.classList.add('active'); optionsArea.appendChild(b);
   });
 }
-
 function showOverview(team){
-  contentInner.innerHTML = `<h3 style="margin-top:0">${team.name} — Visão Geral</h3>
-    <p class="hint">${team.description || ''}</p>
-    <div style="margin-top:8px"><strong>Membros:</strong> ${team.members.join(', ')}</div>`;
-  animateContent();
+  contentInner.innerHTML=`<h3>${team.name} — Visão Geral</h3><p class="hint">${team.description}</p><div><strong>Membros:</strong> ${team.members.join(', ')}</div>`;
 }
 function showMembers(team){
-  contentInner.innerHTML = `<h3 style="margin-top:0">${team.name} — Membros</h3>
-    <ul>${team.members.map(m=>`<li>${m}</li>`).join('')}</ul>`;
-  animateContent();
+  contentInner.innerHTML=`<h3>${team.name} — Membros</h3><ul>${team.members.map(m=>`<li>${m}</li>`).join('')}</ul>`;
 }
 function showStats(team){
-  const attackers = team.attackers || [];
-  const avg = attackers.length ? Math.round(attackers.reduce((s,a)=>s+a.pct,0)/attackers.length) : 0;
-  contentInner.innerHTML = `<h3 style="margin-top:0">${team.name} — Estatísticas</h3>
-    <div class="hint">Média de chance de derrota: <strong>${avg}%</strong></div>`;
-  animateContent();
+  const atk=team.attackers||[];
+  const avg=atk.length?Math.round(atk.reduce((s,a)=>s+a.pct,0)/atk.length):0;
+  contentInner.innerHTML=`<h3>${team.name} — Estatísticas</h3><div class="hint">Média de chance de derrota: <strong>${avg}%</strong></div>`;
 }
-
-function animateContent(){
-  const el = document.getElementById('contentArea');
-  el.classList.remove('fade-in');
-  void el.offsetWidth;
-  el.classList.add('fade-in');
-}
-
 function renderAttackers(team){
-  const list = team.attackers || [];
-  const html = `
-    <div style="padding:10px" class="card">
-      <strong>Atacantes contra ${team.name}</strong>
-      <div style="margin-top:10px">
-        <ul class="attack-list">
-          ${list.map(a=>`
-            <li class="attack-item">
-              <div>
-                <div class="attacker-name">${a.name}</div>
-                <div style="font-size:12px;color:var(--muted)">Observação tática</div>
-              </div>
-              <div class="percent ${a.pct>=66?'high':(a.pct>=45?'medium':'low')}">${a.pct}%</div>
-            </li>
-          `).join('')}
-        </ul>
-      </div>
-    </div>
-  `;
-  teamDetailsEl.innerHTML = html;
-  teamDetailsEl.classList.remove('fade-in'); void teamDetailsEl.offsetWidth; teamDetailsEl.classList.add('fade-in');
+  const list=team.attackers||[];
+  teamDetailsEl.innerHTML=`
+  <div class="card"><strong>Atacantes contra ${team.name}</strong>
+  <ul class="attack-list">${list.map(a=>`
+  <li class="attack-item"><div><div class="attacker-name">${a.name}</div><div style="font-size:12px;color:var(--muted)">Observação tática</div></div>
+  <div class="percent ${a.pct>=66?'high':(a.pct>=45?'medium':'low')}">${a.pct}%</div></li>`).join('')}</ul></div>`;
 }
-
-searchEl.addEventListener('input', (e)=>{
-  const v = e.target.value.trim().toLowerCase();
-  const filtered = teamsData.filter(t => t.name.toLowerCase().includes(v) || (t.members && t.members.join(' ').toLowerCase().includes(v)));
-  renderTeams(filtered.length ? filtered : teamsData);
-  if(filtered.length===1) selectTeam(filtered[0].id);
+searchEl.addEventListener('input',e=>{
+  const v=e.target.value.trim().toLowerCase();
+  const filtered=teamsData.filter(t=>t.name.toLowerCase().includes(v)||t.members.join(' ').toLowerCase().includes(v));
+  renderTeams(filtered.length?filtered:teamsData);
 });
-
-sortBtn.addEventListener('click', ()=>{
-  if(!currentTeam) { alert('Selecione um time primeiro'); return; }
-  currentTeam.attackers.sort((a,b)=>b.pct - a.pct);
-  renderAttackers(currentTeam);
-});
-
-function weightedChoice(attackers){
-  const weights = attackers.map(a => Math.max(1, a.pct));
-  const sum = weights.reduce((s,w)=>s+w,0);
-  let r = Math.random()*sum;
-  for(let i=0;i<weights.length;i++){
-    if(r < weights[i]) return attackers[i].name;
-    r -= weights[i];
-  }
-  return attackers[attackers.length-1].name;
-}
-
-simulateBtn.addEventListener('click', ()=>{
-  if(!currentTeam) { alert('Selecione um time para simular'); return; }
-  const count = Math.max(10, parseInt(simCountEl.value) || 1000);
-  const attackers = currentTeam.attackers || [];
-  if(attackers.length===0){ alert('Time não tem atacantes listados'); return; }
-
-  const tally = {};
-  attackers.forEach(a=>tally[a.name]=0);
-  for(let i=0;i<count;i++){
-    const winner = weightedChoice(attackers);
-    tally[winner] += 1;
-  }
-
-  const rows = Object.keys(tally).map(name=>{
-    const wins = tally[name];
-    const pct = ((wins/count)*100).toFixed(1);
-    return {name, wins, pct};
-  }).sort((a,b)=>b.wins - a.wins);
-
-  simResultEl.innerHTML = `<strong>Resultados (${count} simulações)</strong>
-    <div style="margin-top:8px">
-      ${rows.map(r=>`<div style="display:flex;gap:12px;align-items:center;margin-top:6px">
-        <div style="min-width:140px">${r.name}</div>
-        <div style="flex:1"><div style="height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden"><i style="display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:${r.pct}%"></i></div></div>
-        <div style="min-width:60px;text-align:right;font-weight:800">${r.pct}%</div>
-      </div>`).join('')}
-    </div>`;
-});
-
 renderTeams(teamsData);
-if(teamsData.length) setTimeout(()=> selectTeam(teamsData[0].id), 120);
-
-document.addEventListener('keydown', (e)=>{
-  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='f'){ e.preventDefault(); searchEl.focus(); }
-});
-</script>
-</body>
-</html><!DOCTYPE html> 
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>New Asgard — Painel de Guerra com Simulador</title>
-<style>
-:root{
-  --bg:#0b1220; --accent:#0b63d1; --accent-2:#ffd166;
-  --muted:#a7b0c2; --text:#fff; --glass:rgba(255,255,255,0.03);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:linear-gradient(180deg,#071022 0%, #08132a 100%); color:var(--text);
-}
-.topbar{
-  display:flex;gap:16px;align-items:center;justify-content:space-between;
-  padding:12px 20px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-bottom:1px solid rgba(255,255,255,0.04); position:sticky;top:0;z-index:30;
-}
-.brand{display:flex;align-items:center;gap:12px}
-.brand img{width:44px;height:44px;border-radius:8px;object-fit:cover}
-.brand h1{margin:0;color:var(--accent);font-size:18px}
-.searchbar{flex:1;max-width:720px}
-.searchbar input{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:var(--text)}
-
-.layout{display:grid;grid-template-columns:300px 1fr 340px;gap:18px;padding:18px;align-items:start}
-.column{
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-  padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
-  min-height:60vh; max-height:calc(100vh - 160px); overflow:auto;
-}
-
-/* left team list */
-.teams h2{margin:0 0 8px 0;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em}
-.teams-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-.teams-list li{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .12s}
-.teams-list li:hover{transform:translateY(-3px);background:rgba(11,99,209,0.06)}
-.teams-list li.active{background:linear-gradient(90deg, rgba(11,99,209,0.08), rgba(255,209,102,0.03));border:1px solid rgba(11,99,209,0.12)}
-
-/* center area */
-.tabs-left h2{margin:0;color:var(--accent)}
-.tabs-left p{color:var(--muted);margin:6px 0 0;display:flex;align-items:center;gap:12px}
-.tabs-left img{width:40px;height:40px;border-radius:8px;object-fit:cover}
-.options{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.options-btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);cursor:pointer;transition:all .14s}
-.options-btn.active{background:var(--accent);color:#071022;box-shadow:0 8px 20px rgba(11,99,209,0.12)}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-
-/* right area (attackers) */
-.attack-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-.attack-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);transition:all .12s}
-.attack-item:hover{transform:translateY(-4px)}
-.attacker-name{font-weight:700}
-.percent{margin-left:auto;padding:6px 10px;border-radius:999px;font-weight:800}
-.percent.high{background:linear-gradient(90deg,#2ecc71,#27ae60);color:#071022}
-.percent.medium{background:linear-gradient(90deg,#ffd166,#ffb86b);color:#071022}
-.percent.low{background:linear-gradient(90deg,#f75555,#d64545);color:#071022}
-
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.button{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);cursor:pointer}
-.sim-result{margin-top:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
-
-.hint{font-size:13px;color:var(--muted)}
-.fade-in{opacity:0;transform:translateY(8px);animation:fadeIn .36s forwards}
-@keyframes fadeIn{to{opacity:1;transform:none}}
-@media(max-width:1000px){.layout{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<header class="topbar">
-  <div class="brand">
-    <!-- Logo público válido -->
-    <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/7/7d/Thor_Ragnarok_poster.jpg/250px-Thor_Ragnarok_poster.jpg" alt="logo">
-    <h1>New Asgard Brazil — Painel de Guerra</h1>
-  </div>
-  <div class="searchbar"><input id="search" placeholder="Pesquisar time de defesa, membro ou termo..." /></div>
-</header>
-
-<main class="layout">
-  <!-- Defesa (esquerda) -->
-  <aside class="column teams">
-    <h2>Times — Defesa</h2>
-    <div class="hint">Clique em um time para ver atacantes, porcentagens e simular batalhas.</div>
-    <ul id="teamsList" class="teams-list"></ul>
-  </aside>
-
-  <!-- Conteúdo (centro) -->
-  <section class="column content">
-    <div class="tabs-left fade-in">
-      <h2 id="teamTitle">
-        Selecione um time de defesa
-      </h2>
-      <p id="teamShort" class="hint">Detalhes e estatísticas aparecerão aqui.</p>
-    </div>
-
-    <div id="optionsArea" class="options"></div>
-
-    <div id="contentArea" class="card fade-in" style="margin-top:10px;">
-      <div id="contentInner">
-        <p class="hint">Selecione um time da coluna da esquerda para começar.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Ataque (direita) -->
-  <aside class="column details">
-    <h3>Times que derrotam</h3>
-    <div id="teamDetails" class="card">Nenhum time selecionado.</div>
-
-    <div style="margin-top:12px" class="card">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <input id="simCount" type="number" value="1000" min="10" style="width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)">
-        <button id="sortBtn" class="button">Ordenar atacantes por %</button>
-        <button id="simulateBtn" class="button">Simular batalha</button>
-      </div>
-      <div id="simResult" class="sim-result hint">Resultado da simulação aparecerá aqui.</div>
-    </div>
-  </aside>
-</main>
-
-<footer style="padding:12px 18px;text-align:center;color:var(--muted)"></footer>
-
-<script>
-const teamsData = [
-  { id: "vigilantes", name: "Vigilantes", description: "Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[
-    {name:"Iluminati", pct:0},
-    {name:"Fora do Tempo", pct:0},
-    {name:"Liberdade", pct:0},
-    {name:"Aniquiladores e Knul", pct:0}
-  ]},
-  { id: "clube_inferno", name: "Clube do Inferno", description: "Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], attackers:[
-    {name:"Submundo e Kestrel", pct:0},
-    {name:"Iluminati", pct:0},
-    {name:"Mercenarios Pagos", pct:0},
-    {name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:0}
-  ]}
-];
-
-const teamsListEl = document.getElementById('teamsList');
-const searchEl = document.getElementById('search');
-const teamTitleEl = document.getElementById('teamTitle');
-const teamShortEl = document.getElementById('teamShort');
-const optionsArea = document.getElementById('optionsArea');
-const contentInner = document.getElementById('contentInner');
-const teamDetailsEl = document.getElementById('teamDetails');
-const sortBtn = document.getElementById('sortBtn');
-const simulateBtn = document.getElementById('simulateBtn');
-const simCountEl = document.getElementById('simCount');
-const simResultEl = document.getElementById('simResult');
-
-function renderTeams(list){
-  teamsListEl.innerHTML = '';
-  list.forEach(t=>{
-    const li = document.createElement('li');
-    li.dataset.id = t.id;
-    li.innerHTML = `<div><strong>${t.name}</strong><div style="font-size:12px;color:var(--muted)">${t.members.join(' • ')}</div></div><small>›</small>`;
-    li.addEventListener('click', ()=> selectTeam(t.id));
-    teamsListEl.appendChild(li);
-  });
-}
-
-let currentTeam = null;
-function clearActive(){
-  document.querySelectorAll('#teamsList li').forEach(i=>i.classList.remove('active'));
-}
-function selectTeam(id){
-  clearActive();
-  const el = document.querySelector(`#teamsList li[data-id="${id}"]`);
-  if(el) el.classList.add('active');
-
-  const team = teamsData.find(t=>t.id===id);
-  if(!team) return;
-  currentTeam = team;
-  
-  // Adiciona imagem do time ao lado do título
-  teamTitleEl.innerHTML = `<img src="${team.image}" alt="${team.name}"> ${team.name}`;
-  teamShortEl.textContent = team.description || 'Sem descrição.';
-  renderOptions(team);
-  renderAttackers(team);
-  showOverview(team);
-}
-
-function renderOptions(team){
-  optionsArea.innerHTML = '';
-  const opts = ['Visão Geral','Membros','Estatísticas'];
-  opts.forEach((o,idx)=>{
-    const b = document.createElement('button');
-    b.className='options-btn';
-    b.textContent = o;
-    b.addEventListener('click', ()=>{
-      document.querySelectorAll('.options-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      if(o==='Visão Geral') showOverview(team);
-      if(o==='Membros') showMembers(team);
-      if(o==='Estatísticas') showStats(team);
-    });
-    if(idx===0) b.classList.add('active');
-    optionsArea.appendChild(b);
-  });
-}
-
-function showOverview(team){
-  contentInner.innerHTML = `<h3 style="margin-top:0">${team.name} — Visão Geral</h3>
-    <p class="hint">${team.description || ''}</p>
-    <div style="margin-top:8px"><strong>Membros:</strong> ${team.members.join(', ')}</div>`;
-  animateContent();
-}
-function showMembers(team){
-  contentInner.innerHTML = `<h3 style="margin-top:0">${team.name} — Membros</h3>
-    <ul>${team.members.map(m=>`<li>${m}</li>`).join('')}</ul>`;
-  animateContent();
-}
-function showStats(team){
-  const attackers = team.attackers || [];
-  const avg = attackers.length ? Math.round(attackers.reduce((s,a)=>s+a.pct,0)/attackers.length) : 0;
-  contentInner.innerHTML = `<h3 style="margin-top:0">${team.name} — Estatísticas</h3>
-    <div class="hint">Média de chance de derrota: <strong>${avg}%</strong></div>`;
-  animateContent();
-}
-
-function animateContent(){
-  const el = document.getElementById('contentArea');
-  el.classList.remove('fade-in');
-  void el.offsetWidth;
-  el.classList.add('fade-in');
-}
-
-function renderAttackers(team){
-  const list = team.attackers || [];
-  const html = `
-    <div style="padding:10px" class="card">
-      <strong>Atacantes contra ${team.name}</strong>
-      <div style="margin-top:10px">
-        <ul class="attack-list">
-          ${list.map(a=>`
-            <li class="attack-item">
-              <div>
-                <div class="attacker-name">${a.name}</div>
-                <div style="font-size:12px;color:var(--muted)">Observação tática</div>
-              </div>
-              <div class="percent ${a.pct>=66?'high':(a.pct>=45?'medium':'low')}">${a.pct}%</div>
-            </li>
-          `).join('')}
-        </ul>
-      </div>
-    </div>
-  `;
-  teamDetailsEl.innerHTML = html;
-  teamDetailsEl.classList.remove('fade-in'); void teamDetailsEl.offsetWidth; teamDetailsEl.classList.add('fade-in');
-}
-
-searchEl.addEventListener('input', (e)=>{
-  const v = e.target.value.trim().toLowerCase();
-  const filtered = teamsData.filter(t => t.name.toLowerCase().includes(v) || (t.members && t.members.join(' ').toLowerCase().includes(v)));
-  renderTeams(filtered.length ? filtered : teamsData);
-  if(filtered.length===1) selectTeam(filtered[0].id);
-});
-
-sortBtn.addEventListener('click', ()=>{
-  if(!currentTeam) { alert('Selecione um time primeiro'); return; }
-  currentTeam.attackers.sort((a,b)=>b.pct - a.pct);
-  renderAttackers(currentTeam);
-});
-
-function weightedChoice(attackers){
-  const weights = attackers.map(a => Math.max(1, a.pct));
-  const sum = weights.reduce((s,w)=>s+w,0);
-  let r = Math.random()*sum;
-  for(let i=0;i<weights.length;i++){
-    if(r < weights[i]) return attackers[i].name;
-    r -= weights[i];
-  }
-  return attackers[attackers.length-1].name;
-}
-
-simulateBtn.addEventListener('click', ()=>{
-  if(!currentTeam) { alert('Selecione um time para simular'); return; }
-  const count = Math.max(10, parseInt(simCountEl.value) || 1000);
-  const attackers = currentTeam.attackers || [];
-  if(attackers.length===0){ alert('Time não tem atacantes listados'); return; }
-
-  const tally = {};
-  attackers.forEach(a=>tally[a.name]=0);
-  for(let i=0;i<count;i++){
-    const winner = weightedChoice(attackers);
-    tally[winner] += 1;
-  }
-
-  const rows = Object.keys(tally).map(name=>{
-    const wins = tally[name];
-    const pct = ((wins/count)*100).toFixed(1);
-    return {name, wins, pct};
-  }).sort((a,b)=>b.wins - a.wins);
-
-  simResultEl.innerHTML = `<strong>Resultados (${count} simulações)</strong>
-    <div style="margin-top:8px">
-      ${rows.map(r=>`<div style="display:flex;gap:12px;align-items:center;margin-top:6px">
-        <div style="min-width:140px">${r.name}</div>
-        <div style="flex:1"><div style="height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden"><i style="display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:${r.pct}%"></i></div></div>
-        <div style="min-width:60px;text-align:right;font-weight:800">${r.pct}%</div>
-      </div>`).join('')}
-    </div>`;
-});
-
-renderTeams(teamsData);
-if(teamsData.length) setTimeout(()=> selectTeam(teamsData[0].id), 120);
-
-document.addEventListener('keydown', (e)=>{
-  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='f'){ e.preventDefault(); searchEl.focus(); }
-});
+selectTeam(teamsData[0].id);
 </script>
 </body>
 </html>
