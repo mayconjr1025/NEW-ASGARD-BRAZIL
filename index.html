@@ -10,34 +10,61 @@
   --muted:#a7b0c2; --text:#fff; --glass:rgba(255,255,255,0.03);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+html,body{height:100%;scroll-behavior:smooth;}
 body{
   font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
   background:linear-gradient(180deg,#071022 0%, #08132a 100%);
   color:var(--text);
 }
+
+/* ===== CABEÇALHO ===== */
 .topbar{
-  display:flex;gap:16px;align-items:center;justify-content:space-between;
-  padding:12px 20px;
-  background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-bottom:1px solid rgba(255,255,255,0.04);
-  position:sticky;top:0;z-index:30;
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:14px 24px;
+  background:rgba(11,18,32,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 0 25px rgba(11,99,209,0.15);
 }
-.brand{display:flex;align-items:center;gap:12px}
-.brand img{width:44px;height:44px;border-radius:8px;object-fit:cover}
-.brand h1{margin:0;color:var(--accent);font-size:18px}
-.searchbar{flex:1;max-width:720px}
+.brand{
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+}
+.brand img{
+  width:48px;height:48px;border-radius:10px;object-fit:cover;
+  box-shadow:0 0 8px rgba(11,99,209,0.4);
+  transition:all .25s;
+}
+.brand:hover img{box-shadow:0 0 14px rgba(11,99,209,0.7)}
+.brand h1{font-size:20px;color:var(--accent);text-shadow:0 0 6px rgba(11,99,209,0.5);}
+.navbar{display:flex;gap:12px;flex-wrap:wrap;}
+.nav-item{
+  padding:8px 14px;border-radius:8px;color:var(--text);font-weight:600;font-size:14px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.05);
+  cursor:pointer;transition:all .2s;
+}
+.nav-item:hover{
+  background:var(--accent);color:#071022;box-shadow:0 0 12px rgba(11,99,209,0.4);
+}
+.searchbar{flex:1;max-width:400px;position:relative;}
 .searchbar input{
-  width:100%;padding:10px;border-radius:12px;
-  border:1px solid rgba(255,255,255,0.06);
-  background:var(--glass);color:var(--text)
+  width:100%;padding:10px 36px 10px 14px;border-radius:12px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.03);color:var(--text);
+}
+.searchbar input:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 10px rgba(11,99,209,0.4);
 }
 
-.layout{
-  display:grid;
-  grid-template-columns:300px 1fr 340px;
-  gap:18px;padding:18px;align-items:start;
-}
+/* ===== SEÇÕES ===== */
+section{padding:20px 18px;scroll-margin-top:100px;}
+#inicio h2{text-align:center;color:var(--accent-2);margin-bottom:12px;font-size:28px;}
+#inicio p{text-align:center;color:var(--muted);margin-bottom:20px;}
+
+/* ===== TIMES ===== */
+.layout{display:grid;grid-template-columns:300px 1fr 340px;gap:18px;}
 .column{
   background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
   padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
@@ -55,10 +82,6 @@ body{
   background:linear-gradient(90deg, rgba(11,99,209,0.08), rgba(255,209,102,0.03));
   border:1px solid rgba(11,99,209,0.12)
 }
-
-.tabs-left h2{margin:0;color:var(--accent)}
-.tabs-left p{color:var(--muted);margin:6px 0 0;display:flex;align-items:center;gap:12px}
-.tabs-left img{width:40px;height:40px;border-radius:8px;object-fit:cover}
 .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .options-btn{
   padding:8px 12px;border-radius:10px;
@@ -71,7 +94,36 @@ body{
   background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
   padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)
 }
+textarea.note-box{
+  width:100%;min-height:140px;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);border-radius:10px;
+  color:var(--text);padding:10px;resize:vertical;font-family:inherit;
+}
+.note-save{
+  margin-top:8px;padding:8px 14px;border:none;border-radius:8px;
+  background:var(--accent);color:#071022;cursor:pointer;font-weight:600;
+  transition:all .15s;
+}
+.note-save:hover{opacity:.9}
+footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,0,0,0.3);}
+@media(max-width:1200px){.layout{grid-template-columns:250px 1fr}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start;gap:10px}}
 
+/* Estatísticas */
+.stat-bar{
+  height:18px;border-radius:10px;background:rgba(255,255,255,0.05);
+  overflow:hidden;margin-top:4px;margin-bottom:8px;
+}
+.stat-fill{height:100%;width:0;border-radius:10px;transition:width 1s ease-out;}
+.stat-name{font-size:14px;font-weight:600}
+.stat-value{font-size:13px;color:var(--muted);margin-left:6px}
+.avg-circle{
+  width:100px;height:100px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--pct)*1%), rgba(255,255,255,0.05) 0);
+  display:flex;align-items:center;justify-content:center;
+  margin:10px auto 20px;position:relative;
+}
+.avg-circle span{position:absolute;color:#fff;font-weight:700;font-size:20px}
 .attack-list{list-style:none;display:flex;flex-direction:column;gap:10px}
 .attack-item{
   display:flex;align-items:center;gap:10px;padding:10px;
@@ -85,88 +137,108 @@ body{
 .percent.medium{background:linear-gradient(90deg,#ffd166,#ffb86b);color:#071022}
 .percent.low{background:linear-gradient(90deg,#f75555,#d64545);color:#071022}
 .hint{font-size:13px;color:var(--muted)}
-.fade-in{opacity:0;transform:translateY(8px);animation:fadeIn .36s forwards}
-@keyframes fadeIn{to{opacity:1;transform:none}}
-
-/* RESPONSIVIDADE APRIMORADA */
-@media(max-width:1200px){
-  .layout{grid-template-columns:250px 1fr}
-}
-@media(max-width:900px){
-  .layout{grid-template-columns:1fr}
-  .topbar{flex-direction:column;align-items:flex-start;gap:10px}
-  .searchbar{width:100%;max-width:none}
-  .column{max-height:none}
-  .brand h1{font-size:16px}
-  .brand img{width:36px;height:36px}
-}
 </style>
 </head>
 <body>
+
 <header class="topbar">
-  <div class="brand">
+  <div class="brand" onclick="scrollToSection('inicio')">
     <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/7/7d/Thor_Ragnarok_poster.jpg/250px-Thor_Ragnarok_poster.jpg" alt="logo">
-    <h1>New Asgard Brazil — Painel de Guerra</h1>
+    <h1>New Asgard Brazil</h1>
   </div>
-  <div class="searchbar"><input id="search" placeholder="Pesquisar time de defesa, membro ou termo..." /></div>
+
+  <nav class="navbar">
+    <div class="nav-item" onclick="scrollToSection('inicio')">Início</div>
+    <div class="nav-item" onclick="scrollToSection('times')">Times</div>
+    <div class="nav-item" onclick="scrollToSection('simulador')">Simulador</div>
+    <div class="nav-item" onclick="scrollToSection('contato')">Contato</div>
+  </nav>
+
+  <div class="searchbar">
+    <input id="search" placeholder="🔍 Buscar time ou membro..." />
+  </div>
 </header>
 
-<main class="layout">
-  <aside class="column teams">
-    <h2>Times — Defesa</h2>
-    <div class="hint">Clique em um time para ver atacantes e simular batalhas.</div>
-    <ul id="teamsList" class="teams-list"></ul>
-  </aside>
+<section id="inicio">
+  <h2>Bem-vindo ao New Asgard Brazil</h2>
+  <p>Escolha um time de defesa, veja estatísticas e simule batalhas épicas!</p>
+</section>
 
-  <section class="column content">
-    <div class="tabs-left fade-in">
-      <h2 id="teamTitle">Selecione um time de defesa</h2>
-      <p id="teamShort" class="hint">Detalhes e estatísticas aparecerão aqui.</p>
-    </div>
+<section id="times">
+  <div class="layout">
+    <aside class="column teams">
+      <h2>Times — Defesa</h2>
+      <div class="hint">Clique em um time para ver atacantes e simular batalhas.</div>
+      <ul id="teamsList" class="teams-list"></ul>
+    </aside>
 
-    <div id="optionsArea" class="options"></div>
-    <div id="contentArea" class="card fade-in" style="margin-top:10px;">
-      <div id="contentInner"><p class="hint">Selecione um time da coluna da esquerda para começar.</p></div>
-    </div>
-  </section>
-
-  <aside class="column details">
-    <h3>Times que derrotam</h3>
-    <div id="teamDetails" class="card">Nenhum time selecionado.</div>
-
-    <div style="margin-top:12px" class="card">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <input id="simCount" type="number" value="1000" min="10"
-          style="width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)">
-        <button id="sortBtn" class="button">Ordenar atacantes por %</button>
-        <button id="simulateBtn" class="button">Simular batalha</button>
+    <section class="column content">
+      <div class="tabs-left fade-in">
+        <h2 id="teamTitle">Selecione um time de defesa</h2>
+        <p id="teamShort" class="hint">Detalhes e estatísticas aparecerão aqui.</p>
       </div>
-      <div id="simResult" class="sim-result hint">Resultado da simulação aparecerá aqui.</div>
-    </div>
-  </aside>
-</main>
+      <div id="optionsArea" class="options"></div>
+      <div id="contentArea" class="card fade-in" style="margin-top:10px;">
+        <div id="contentInner"><p class="hint">Selecione um time da coluna da esquerda para começar.</p></div>
+      </div>
+    </section>
 
-<footer style="padding:12px 18px;text-align:center;color:var(--muted)">
+    <aside class="column details">
+      <h3>Times que derrotam</h3>
+      <div id="teamDetails" class="card">Nenhum time selecionado.</div>
+      <div style="margin-top:12px" class="card">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <input id="simCount" type="number" value="1000" min="10" style="width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)">
+          <button id="sortBtn" class="button">Ordenar atacantes por %</button>
+          <button id="simulateBtn" class="button">Simular batalha</button>
+        </div>
+        <div id="simResult" class="sim-result hint">Resultado da simulação aparecerá aqui.</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="simulador">
+  <h2>Simulador de Batalhas</h2>
+  <p class="hint">Use os controles na seção de Times para simular confrontos.</p>
+</section>
+
+<section id="contato">
+  <h2>Contato</h2>
+  <p>Desenvolvido por Maycon Junior — 61 982801931</p>
+</section>
+
+<footer>
   © 2025 New Asgard Brazil
 </footer>
 
 <script>
+// Função de scroll
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(el){ el.scrollIntoView({behavior:'smooth'}); }
+}
+
+/* ===== TIMES DATA ===== */
 const teamsData = [
   { id: "vigilantes", name: "Vigilantes", description: "Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[
     {name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul", pct:0}
   ]},
   { id: "clube_inferno", name: "Clube do Inferno", description: "Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], attackers:[
-    {name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:0}
+    {name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}
+  ]},
+  { id: "UCM", name: "UCM", description: "Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], attackers:[
+    {name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}
   ]}
 ];
+
+/* ===== SEU SCRIPT ANTIGO ===== */
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const teamsListEl = $('#teamsList'), searchEl = $('#search'),
 teamTitleEl = $('#teamTitle'), teamShortEl = $('#teamShort'),
 optionsArea = $('#optionsArea'), contentInner = $('#contentInner'),
-teamDetailsEl = $('#teamDetails'), sortBtn = $('#sortBtn'),
-simulateBtn = $('#simulateBtn'), simCountEl = $('#simCount'),
-simResultEl = $('#simResult');
+teamDetailsEl = $('#teamDetails');
 
 function renderTeams(list){
   teamsListEl.innerHTML='';
@@ -186,13 +258,14 @@ function selectTeam(id){
   if(el) el.classList.add('active');
   const team=teamsData.find(t=>t.id===id);
   if(!team)return; currentTeam=team;
-  teamTitleEl.innerHTML=`<img src="${team.image}" alt="${team.name}"> ${team.name}`;
+  teamTitleEl.innerHTML=`<img src="${team.image}" alt="${team.name}" style="width:40px;height:40px;border-radius:8px;object-fit:cover"> ${team.name}`;
   teamShortEl.textContent=team.description||'Sem descrição.';
   renderOptions(team); renderAttackers(team); showOverview(team);
 }
+
 function renderOptions(team){
   optionsArea.innerHTML='';
-  const opts=['Visão Geral','Membros','Estatísticas'];
+  const opts=['Visão Geral','Membros','Estatísticas','Observações'];
   opts.forEach((o,i)=>{
     const b=document.createElement('button');
     b.className='options-btn'; b.textContent=o;
@@ -202,10 +275,12 @@ function renderOptions(team){
       if(o==='Visão Geral')showOverview(team);
       if(o==='Membros')showMembers(team);
       if(o==='Estatísticas')showStats(team);
+      if(o==='Observações')showNotes(team);
     });
     if(i===0)b.classList.add('active'); optionsArea.appendChild(b);
   });
 }
+
 function showOverview(team){
   contentInner.innerHTML=`<h3>${team.name} — Visão Geral</h3><p class="hint">${team.description}</p><div><strong>Membros:</strong> ${team.members.join(', ')}</div>`;
 }
@@ -215,8 +290,37 @@ function showMembers(team){
 function showStats(team){
   const atk=team.attackers||[];
   const avg=atk.length?Math.round(atk.reduce((s,a)=>s+a.pct,0)/atk.length):0;
-  contentInner.innerHTML=`<h3>${team.name} — Estatísticas</h3><div class="hint">Média de chance de derrota: <strong>${avg}%</strong></div>`;
+  const bars = atk.map(a=>{
+    const color=a.pct>=66?'#2ecc71':(a.pct>=45?'#ffd166':'#f75555');
+    return `
+      <div class="stat">
+        <div class="stat-name">${a.name}<span class="stat-value">${a.pct}%</span></div>
+        <div class="stat-bar"><div class="stat-fill" style="background:${color};width:${a.pct}%;"></div></div>
+      </div>`;
+  }).join('');
+  contentInner.innerHTML=`
+    <h3>${team.name} — Estatísticas</h3>
+    <div class="avg-circle" style="--pct:${avg};"><span>${avg}%</span></div>
+    <div class="hint" style="text-align:center">Média geral de desempenho</div>
+    <div style="margin-top:16px">${bars}</div>`;
 }
+
+function showNotes(team){
+  const key = 'notes_'+team.id;
+  const saved = localStorage.getItem(key) || '';
+  contentInner.innerHTML=`
+    <h3>${team.name} — Observações</h3>
+    <textarea id="noteBox" class="note-box" placeholder="Escreva observações táticas, fraquezas ou dicas...">${saved}</textarea>
+    <button id="saveNote" class="note-save">💾 Salvar Observações</button>
+    <p class="hint">As observações são salvas localmente no navegador.</p>
+  `;
+  $('#saveNote').addEventListener('click',()=>{
+    const val=$('#noteBox').value.trim();
+    localStorage.setItem(key,val);
+    alert('Observações salvas para '+team.name+'!');
+  });
+}
+
 function renderAttackers(team){
   const list=team.attackers||[];
   teamDetailsEl.innerHTML=`
@@ -225,13 +329,18 @@ function renderAttackers(team){
   <li class="attack-item"><div><div class="attacker-name">${a.name}</div><div style="font-size:12px;color:var(--muted)">Observação tática</div></div>
   <div class="percent ${a.pct>=66?'high':(a.pct>=45?'medium':'low')}">${a.pct}%</div></li>`).join('')}</ul></div>`;
 }
+
 searchEl.addEventListener('input',e=>{
   const v=e.target.value.trim().toLowerCase();
   const filtered=teamsData.filter(t=>t.name.toLowerCase().includes(v)||t.members.join(' ').toLowerCase().includes(v));
   renderTeams(filtered.length?filtered:teamsData);
 });
+
 renderTeams(teamsData);
 selectTeam(teamsData[0].id);
 </script>
+
 </body>
 </html>
+
+
