@@ -27,9 +27,7 @@ body{
   border-bottom:1px solid rgba(255,255,255,0.06);
   box-shadow:0 0 25px rgba(11,99,209,0.15);
 }
-.brand{
-  display:flex;align-items:center;gap:12px;cursor:pointer;
-}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;}
 .brand img{
   width:48px;height:48px;border-radius:10px;object-fit:cover;
   box-shadow:0 0 8px rgba(11,99,209,0.4);
@@ -64,24 +62,67 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 #inicio p{text-align:center;color:var(--muted);margin-bottom:20px;}
 
 /* ===== TIMES ===== */
-.layout{display:grid;grid-template-columns:300px 1fr 340px;gap:18px;}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:18px;}
 .column{
   background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
   padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
   min-height:60vh;max-height:calc(100vh - 160px);overflow:auto;
 }
-.teams h2{margin-bottom:8px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em}
-.teams-list{list-style:none;display:flex;flex-direction:column;gap:8px}
-.teams-list li{
-  padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);
-  cursor:pointer;display:flex;align-items:center;justify-content:space-between;
-  transition:all .12s;
+.teams{
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 15px rgba(11,99,209,0.15);
+  border:1px solid rgba(255,255,255,0.08);
+  transition:all .3s;
 }
-.teams-list li:hover{transform:translateY(-3px);background:rgba(11,99,209,0.06)}
-.teams-list li.active{
-  background:linear-gradient(90deg, rgba(11,99,209,0.08), rgba(255,209,102,0.03));
-  border:1px solid rgba(11,99,209,0.12)
+.teams:hover{box-shadow:0 0 25px rgba(11,99,209,0.3);}
+.teams h2{
+  margin-bottom:10px;color:var(--accent-2);text-transform:uppercase;
+  letter-spacing:.08em;text-shadow:0 0 6px rgba(255,209,102,0.2);
 }
+.teams-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.team-card{
+  position:relative;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:12px;
+  padding:10px 12px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  transition:all .25s;
+  overflow:hidden;
+}
+.team-card::before{
+  content:"";
+  position:absolute;top:0;left:0;width:0%;height:100%;
+  background:linear-gradient(90deg,rgba(11,99,209,0.2),rgba(255,209,102,0.1));
+  transition:width .35s;
+  z-index:0;
+}
+.team-card:hover::before{width:100%;}
+.team-card:hover{
+  transform:translateY(-3px) scale(1.02);
+  box-shadow:0 0 12px rgba(11,99,209,0.3);
+}
+.team-card.active{
+  border-color:var(--accent);
+  box-shadow:0 0 15px rgba(11,99,209,0.5);
+}
+.team-card img{
+  width:44px;height:44px;border-radius:8px;object-fit:cover;
+  box-shadow:0 0 6px rgba(11,99,209,0.25);
+  z-index:1;
+}
+.team-info{z-index:1;}
+.team-info strong{display:block;font-size:15px;color:var(--accent-2);}
+.team-info small{color:var(--muted);font-size:12px;}
+.team-power{
+  margin-left:auto;background:rgba(11,99,209,0.15);
+  color:var(--accent-2);padding:4px 8px;border-radius:6px;
+  font-size:12px;font-weight:700;z-index:1;
+}
+
+/* ===== CONTEÚDO CENTRAL ===== */
 .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .options-btn{
   padding:8px 12px;border-radius:10px;
@@ -94,6 +135,8 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
   padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)
 }
+
+/* ===== NOTAS ===== */
 textarea.note-box{
   width:100%;min-height:140px;background:rgba(255,255,255,0.04);
   border:1px solid rgba(255,255,255,0.08);border-radius:10px;
@@ -105,41 +148,14 @@ textarea.note-box{
   transition:all .15s;
 }
 .note-save:hover{opacity:.9}
-footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,0,0,0.3);}
-@media(max-width:1200px){.layout{grid-template-columns:250px 1fr}}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start;gap:10px}}
 
-/* Estatísticas */
-.stat-bar{
-  height:18px;border-radius:10px;background:rgba(255,255,255,0.05);
-  overflow:hidden;margin-top:4px;margin-bottom:8px;
-}
-.stat-fill{height:100%;width:0;border-radius:10px;transition:width 1s ease-out;}
-.stat-name{font-size:14px;font-weight:600}
-.stat-value{font-size:13px;color:var(--muted);margin-left:6px}
-.avg-circle{
-  width:100px;height:100px;border-radius:50%;
-  background:conic-gradient(var(--accent) calc(var(--pct)*1%), rgba(255,255,255,0.05) 0);
-  display:flex;align-items:center;justify-content:center;
-  margin:10px auto 20px;position:relative;
-}
-.avg-circle span{position:absolute;color:#fff;font-weight:700;font-size:20px}
-.attack-list{list-style:none;display:flex;flex-direction:column;gap:10px}
-.attack-item{
-  display:flex;align-items:center;gap:10px;padding:10px;
-  border-radius:10px;background:rgba(255,255,255,0.02);
-  transition:all .12s
-}
-.attack-item:hover{transform:translateY(-4px)}
-.attacker-name{font-weight:700}
-.percent{margin-left:auto;padding:6px 10px;border-radius:999px;font-weight:800}
-.percent.high{background:linear-gradient(90deg,#2ecc71,#27ae60);color:#071022}
-.percent.medium{background:linear-gradient(90deg,#ffd166,#ffb86b);color:#071022}
-.percent.low{background:linear-gradient(90deg,#f75555,#d64545);color:#071022}
-.hint{font-size:13px;color:var(--muted)}
+footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,0,0,0.3);}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start;gap:10px}}
 </style>
 </head>
 <body>
+
+<audio id="asgardSound" src="https://freesound.org/data/previews/341/341695_6243544-lq.mp3"></audio>
 
 <header class="topbar">
   <div class="brand" onclick="scrollToSection('inicio')">
@@ -168,33 +184,18 @@ footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,
   <div class="layout">
     <aside class="column teams">
       <h2>Times — Defesa</h2>
-      <div class="hint">Clique em um time para ver atacantes e simular batalhas.</div>
+      <div class="hint">Clique em um time para ver integrantes, ataques e notas.</div>
       <ul id="teamsList" class="teams-list"></ul>
     </aside>
 
     <section class="column content">
-      <div class="tabs-left fade-in">
-        <h2 id="teamTitle">Selecione um time de defesa</h2>
-        <p id="teamShort" class="hint">Detalhes e estatísticas aparecerão aqui.</p>
-      </div>
+      <h2 id="teamTitle">Selecione um time de defesa</h2>
+      <p id="teamShort" class="hint">Detalhes aparecerão aqui.</p>
       <div id="optionsArea" class="options"></div>
-      <div id="contentArea" class="card fade-in" style="margin-top:10px;">
-        <div id="contentInner"><p class="hint">Selecione um time da coluna da esquerda para começar.</p></div>
+      <div id="contentInner" class="card" style="margin-top:10px;">
+        <p class="hint">Selecione um time da coluna da esquerda para começar.</p>
       </div>
     </section>
-
-    <aside class="column details">
-      <h3>Times que derrotam</h3>
-      <div id="teamDetails" class="card">Nenhum time selecionado.</div>
-      <div style="margin-top:12px" class="card">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <input id="simCount" type="number" value="1000" min="10" style="width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)">
-          <button id="sortBtn" class="button">Ordenar atacantes por %</button>
-          <button id="simulateBtn" class="button">Simular batalha</button>
-        </div>
-        <div id="simResult" class="sim-result hint">Resultado da simulação aparecerá aqui.</div>
-      </div>
-    </aside>
   </div>
 </section>
 
@@ -213,126 +214,89 @@ footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,
 </footer>
 
 <script>
-// Função de scroll
-function scrollToSection(id){
-  const el=document.getElementById(id);
-  if(el){ el.scrollIntoView({behavior:'smooth'}); }
-}
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+const teamsListEl = $('#teamsList'), searchEl = $('#search');
+const teamTitleEl = $('#teamTitle'), teamShortEl = $('#teamShort');
+const optionsArea = $('#optionsArea'), contentInner = $('#contentInner');
+const asgardSound = $('#asgardSound');
 
-/* ===== TIMES DATA ===== */
 const teamsData = [
-  { id: "vigilantes", name: "Vigilantes", description: "Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[
-    {name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul", pct:0}
-  ]},
-  { id: "clube_inferno", name: "Clube do Inferno", description: "Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], attackers:[
-    {name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}
-  ]},
-  { id: "UCM", name: "UCM", description: "Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], attackers:[
-    {name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}
-  ]},
-  { id: "Amaldiçoados", name: "Amaldiçoados", description: "Da sombras surgimos... e nelas deixamos nossos inimigos!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/2/29/Bloodborne_capa.png/330px-Bloodborne_capa.png", members:["Juggernaut","Mordo","Capuz","Satana","hellverine"], attackers:[
-    {name:"Submundo", pct:0},{name:"Submundo daken(nobu)", pct:0},{name:"Força A", pct:0},{name:"Knowhere Quasar", pct:0}, {name:"Mente coletiva e Knul", pct:0} ,{name:"Cabal com Apo e kang", pct:0}
-    ,{name:"cabal com apo e mefisto", pct:0},{name:"mercenarios pagos", pct:0},{name:"fora do tempo", pct:0},{name:"orquidea", pct:0},{name:"imortais e ares", pct:0},{name:"força v", pct:0},{name:"poderosos vingadores", pct:0}
-    ,{name:"fabulosos vingadores", pct:0},{name:"liberdade", pct:0},{name:"perseguidores noturno", pct:0},{name:"ucm", pct:0},{name:"clube do inferno", pct:0}
-  ]}
+  { id:"vigilantes", name:"Vigilantes", description:"Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[{name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul", pct:0}]},
+  { id:"clube_inferno", name:"Clube do Inferno", description:"Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], attackers:[{name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}]},
+  { id:"UCM", name:"UCM", description:"Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], attackers:[{name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}]},
+  { id:"Amaldicoados", name:"Amaldiçoados", description:"Da sombras surgimos... e nelas deixamos nossos inimigos!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/2/29/Bloodborne_capa.png/330px-Bloodborne_capa.png", members:["Juggernaut","Mordo","Capuz","Satana","hellverine"], attackers:[{name:"Submundo", pct:0},{name:"Submundo daken(nobu)", pct:0},{name:"Força A", pct:0},{name:"Knowhere Quasar", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Cabal com Apo e kang", pct:0},{name:"cabal com apo e mefisto", pct:0},{name:"mercenarios pagos", pct:0},{name:"fora do tempo", pct:0},{name:"orquidea", pct:0},{name:"imortais e ares", pct:0},{name:"força v", pct:0},{name:"poderosos vingadores", pct:0},{name:"fabulosos vingadores", pct:0},{name:"liberdade", pct:0},{name:"perseguidores noturno", pct:0},{name:"ucm", pct:0},{name:"clube do inferno", pct:0}]}
 ];
-
-/* ===== SEU SCRIPT ANTIGO ===== */
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-const teamsListEl = $('#teamsList'), searchEl = $('#search'),
-teamTitleEl = $('#teamTitle'), teamShortEl = $('#teamShort'),
-optionsArea = $('#optionsArea'), contentInner = $('#contentInner'),
-teamDetailsEl = $('#teamDetails');
 
 function renderTeams(list){
   teamsListEl.innerHTML='';
   list.forEach(t=>{
     const li=document.createElement('li');
+    li.className='team-card';
     li.dataset.id=t.id;
-    li.innerHTML=`<div><strong>${t.name}</strong><div style="font-size:12px;color:var(--muted)">${t.members.join(' • ')}</div></div><small>›</small>`;
-    li.addEventListener('click',()=>selectTeam(t.id));
+    li.innerHTML=`<img src="${t.image}" alt="${t.name}"><div class="team-info"><strong>${t.name}</strong><small>${t.members.join(' • ')}</small></div><div class="team-power">⚡${Math.floor(Math.random()*30+70)}%</div>`;
+    li.onclick=()=>selectTeam(t.id);
     teamsListEl.appendChild(li);
   });
 }
-let currentTeam=null;
-function clearActive(){ $$('#teamsList li').forEach(i=>i.classList.remove('active')); }
-function selectTeam(id){
-  clearActive();
-  const el=$(`#teamsList li[data-id="${id}"]`);
-  if(el) el.classList.add('active');
-  const team=teamsData.find(t=>t.id===id);
-  if(!team)return; currentTeam=team;
-  teamTitleEl.innerHTML=`<img src="${team.image}" alt="${team.name}" style="width:40px;height:40px;border-radius:8px;object-fit:cover"> ${team.name}`;
-  teamShortEl.textContent=team.description||'Sem descrição.';
-  renderOptions(team); renderAttackers(team); showOverview(team);
-}
 
-function renderOptions(team){
+function selectTeam(id){
+  asgardSound.currentTime=0; asgardSound.play();
+  $$('.team-card').forEach(c=>c.classList.remove('active'));
+  const card=document.querySelector(`[data-id="${id}"]`);
+  if(card) card.classList.add('active');
+  const team=teamsData.find(x=>x.id===id);
+  if(!team) return;
+  teamTitleEl.textContent=team.name;
+  teamShortEl.textContent=team.description;
+
   optionsArea.innerHTML='';
-  const opts=['Visão Geral','Membros','Estatísticas','Observações'];
+  const opts=['Visão Geral','Ataques','Notas'];
   opts.forEach((o,i)=>{
     const b=document.createElement('button');
     b.className='options-btn'; b.textContent=o;
+    if(i===0)b.classList.add('active');
     b.addEventListener('click',()=>{
       $$('.options-btn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
-      if(o==='Visão Geral')showOverview(team);
-      if(o==='Membros')showMembers(team);
-      if(o==='Estatísticas')showStats(team);
-      if(o==='Observações')showNotes(team);
+      if(o==='Visão Geral') showOverview(team);
+      if(o==='Ataques') showAttackers(team);
+      if(o==='Notas') showNotes(team);
     });
-    if(i===0)b.classList.add('active'); optionsArea.appendChild(b);
+    optionsArea.appendChild(b);
   });
+
+  showOverview(team);
 }
 
 function showOverview(team){
-  contentInner.innerHTML=`<h3>${team.name} — Visão Geral</h3><p class="hint">${team.description}</p><div><strong>Membros:</strong> ${team.members.join(', ')}</div>`;
+  contentInner.innerHTML=`
+    <h3>${team.name} — Visão Geral</h3>
+    <p class="hint" style="margin-top:8px;">${team.description}</p>
+    <strong>Membros:</strong>
+    <ul style="margin-top:6px;">${team.members.map(m=>`<li>• ${m}</li>`).join('')}</ul>
+  `;
 }
-function showMembers(team){
-  contentInner.innerHTML=`<h3>${team.name} — Membros</h3><ul>${team.members.map(m=>`<li>${m}</li>`).join('')}</ul>`;
-}
-function showStats(team){
+
+function showAttackers(team){
   const atk=team.attackers||[];
-  const avg=atk.length?Math.round(atk.reduce((s,a)=>s+a.pct,0)/atk.length):0;
   const bars = atk.map(a=>{
     const color=a.pct>=66?'#2ecc71':(a.pct>=45?'#ffd166':'#f75555');
-    return `
-      <div class="stat">
-        <div class="stat-name">${a.name}<span class="stat-value">${a.pct}%</span></div>
-        <div class="stat-bar"><div class="stat-fill" style="background:${color};width:${a.pct}%;"></div></div>
-      </div>`;
+    return `<li class="attack-item"><div class="attacker-name">${a.name}</div><div class="percent" style="background:${color};color:#071022">${a.pct}%</div></li>`;
   }).join('');
-  contentInner.innerHTML=`
-    <h3>${team.name} — Estatísticas</h3>
-    <div class="avg-circle" style="--pct:${avg};"><span>${avg}%</span></div>
-    <div class="hint" style="text-align:center">Média geral de desempenho</div>
-    <div style="margin-top:16px">${bars}</div>`;
+  contentInner.innerHTML=`<h3>${team.name} — Ataques</h3><ul class="attack-list">${bars}</ul>`;
 }
 
 function showNotes(team){
-  const key = 'notes_'+team.id;
-  const saved = localStorage.getItem(key) || '';
-  contentInner.innerHTML=`
-    <h3>${team.name} — Observações</h3>
-    <textarea id="noteBox" class="note-box" placeholder="Escreva observações táticas, fraquezas ou dicas...">${saved}</textarea>
-    <button id="saveNote" class="note-save">💾 Salvar Observações</button>
-    <p class="hint">As observações são salvas localmente no navegador.</p>
-  `;
-  $('#saveNote').addEventListener('click',()=>{
-    const val=$('#noteBox').value.trim();
-    localStorage.setItem(key,val);
-    alert('Observações salvas para '+team.name+'!');
-  });
-}
-
-function renderAttackers(team){
-  const list=team.attackers||[];
-  teamDetailsEl.innerHTML=`
-  <div class="card"><strong>Atacantes contra ${team.name}</strong>
-  <ul class="attack-list">${list.map(a=>`
-  <li class="attack-item"><div><div class="attacker-name">${a.name}</div><div style="font-size:12px;color:var(--muted)">Observação tática</div></div>
-  <div class="percent ${a.pct>=66?'high':(a.pct>=45?'medium':'low')}">${a.pct}%</div></li>`).join('')}</ul></div>`;
+  const key='notes_'+team.id;
+  const saved=localStorage.getItem(key)||'';
+  contentInner.innerHTML=`<h3>${team.name} — Notas</h3>
+    <textarea id="noteBox" class="note-box" placeholder="Escreva observações...">${saved}</textarea>
+    <button id="saveNote" class="note-save">💾 Salvar Notas</button>`;
+  $('#saveNote').onclick=()=>{
+    localStorage.setItem(key,$('#noteBox').value);
+    alert('Notas salvas!');
+  }
 }
 
 searchEl.addEventListener('input',e=>{
