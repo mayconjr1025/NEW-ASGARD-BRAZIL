@@ -136,6 +136,104 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)
 }
 
+/* ===== VISÃO GERAL MELHORADA ===== */
+.team-stats{
+  display:flex;gap:15px;margin-top:15px;flex-wrap:wrap;
+}
+.stat-card{
+  flex:1;min-width:150px;
+  padding:12px;border-radius:10px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.02);
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+.stat-card strong{
+  display:block;color:var(--muted);font-size:13px;margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.stat-value{
+  font-size:18px;font-weight:700;
+}
+.power-rating{
+  color:var(--power-color);
+  text-shadow:0 0 8px var(--power-color);
+}
+.strategy-text{
+  color:var(--text);font-size:14px;line-height:1.4;
+}
+.members-grid{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;
+}
+.member-chip{
+  padding:6px 10px;border-radius:6px;
+  background:rgba(11,99,209,0.1); /* Cor de fundo suave do accent */
+  border:1px solid rgba(11,99,209,0.25);
+  color:var(--accent-2);
+  font-size:13px;font-weight:600;
+  transition:all .2s;
+}
+.member-chip:hover{
+  background:rgba(11,99,209,0.3);
+  transform:translateY(-2px);
+  box-shadow:0 4px 8px rgba(11,99,209,0.2);
+}
+
+/* ===== SIMULADOR (NOVO ESTILO) ===== */
+#simulatorContainer{
+  padding:20px;
+}
+.sim-controls, .sim-result{
+  margin-top:15px;
+  padding:15px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.05);
+}
+.sim-controls{
+  background:rgba(11,99,209,0.05);
+}
+.sim-controls select{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  background:rgba(255,255,255,0.05);
+  color:var(--text);
+  border:1px solid var(--accent);
+  margin-bottom:10px;
+  font-family:inherit;
+  appearance: none; /* Remove seta padrão */
+}
+.sim-controls button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:var(--accent-2);
+  color:#071022;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+}
+.sim-controls button:hover{
+  background:var(--accent);
+  color:var(--text);
+}
+.sim-result h4{
+  color:var(--accent-2);
+  margin-bottom:8px;
+}
+#winChance{
+  font-size:36px;
+  font-weight:900;
+  text-align:center;
+  margin:15px 0;
+  text-shadow:0 0 15px rgba(255,209,102,0.4);
+}
+#matchupHint{
+  color:var(--muted);
+  font-size:14px;
+}
+/* ==================================== */
+
 /* ===== NOTAS ===== */
 textarea.note-box{
   width:100%;min-height:140px;background:rgba(255,255,255,0.04);
@@ -164,10 +262,10 @@ footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,
   </div>
 
   <nav class="navbar">
-    <div class="nav-item" onclick="scrollToSection('inicio')">Início</div>
-    <div class="nav-item" onclick="scrollToSection('times')">Times</div>
-    <div class="nav-item" onclick="scrollToSection('simulador')">Simulador</div>
-    <div class="nav-item" onclick="scrollToSection('contato')">Contato</div>
+    <div class="nav-item" data-target="inicio">Início</div>
+    <div class="nav-item" data-target="times">Times</div>
+    <div class="nav-item" data-target="simulador">Simulador</div>
+    <div class="nav-item" data-target="contato">Contato</div>
   </nav>
 
   <div class="searchbar">
@@ -201,7 +299,11 @@ footer{padding:12px 18px;text-align:center;color:var(--muted);background:rgba(0,
 
 <section id="simulador">
   <h2>Simulador de Batalhas</h2>
-  <p class="hint">Use os controles na seção de Times para simular confrontos.</p>
+  <p class="hint">Selecione um time de defesa na seção acima e adicione um time atacante para estimar a chance de vitória.</p>
+
+  <div id="simulatorContainer" class="card" style="margin-top:20px;">
+    <p id="simStatus">⚠️ Selecione um **Time de Defesa** para começar.</p>
+  </div>
 </section>
 
 <section id="contato">
@@ -220,12 +322,39 @@ const teamsListEl = $('#teamsList'), searchEl = $('#search');
 const teamTitleEl = $('#teamTitle'), teamShortEl = $('#teamShort');
 const optionsArea = $('#optionsArea'), contentInner = $('#contentInner');
 const asgardSound = $('#asgardSound');
+const simulatorContainer = $('#simulatorContainer');
+
+let currentDefenseTeam = null; // Armazena o time de defesa selecionado
+
+function scrollToSection(id){
+  const section = document.getElementById(id);
+  if(section){
+    window.scrollTo({ top: section.offsetTop - 80, behavior: 'smooth' });
+  }
+}
+
+// Tornar os botões do cabeçalho funcionais
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    const target = item.getAttribute('data-target');
+    scrollToSection(target);
+  });
+});
 
 const teamsData = [
-  { id:"vigilantes", name:"Vigilantes", description:"Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[{name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul", pct:0}]},
-  { id:"clube_inferno", name:"Clube do Inferno", description:"Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], attackers:[{name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}]},
-  { id:"UCM", name:"UCM", description:"Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], attackers:[{name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}]},
-  { id:"Amaldicoados", name:"Amaldiçoados", description:"Da sombras surgimos... e nelas deixamos nossos inimigos!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/2/29/Bloodborne_capa.png/330px-Bloodborne_capa.png", members:["Juggernaut","Mordo","Capuz","Satana","hellverine"], attackers:[{name:"Submundo", pct:0},{name:"Submundo daken(nobu)", pct:0},{name:"Força A", pct:0},{name:"Knowhere Quasar", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Cabal com Apo e kang", pct:0},{name:"cabal com apo e mefisto", pct:0},{name:"mercenarios pagos", pct:0},{name:"fora do tempo", pct:0},{name:"orquidea", pct:0},{name:"imortais e ares", pct:0},{name:"força v", pct:0},{name:"poderosos vingadores", pct:0},{name:"fabulosos vingadores", pct:0},{name:"liberdade", pct:0},{name:"perseguidores noturno", pct:0},{name:"ucm", pct:0},{name:"clube do inferno", pct:0}]}
+  // OBS: Adicionei a propriedade 'powerScore' para ser usada no simulador
+  { id:"vigilantes", name:"Vigilantes", description:"Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], powerScore: 78, attackers:[{name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul", pct:0}]},
+  { id:"clube_inferno", name:"Clube do Inferno", description:"Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], powerScore: 92, attackers:[{name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}]},
+  { id:"UCM", name:"UCM", description:"Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], powerScore: 88, attackers:[{name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}]},
+  { id:"Amaldicoados", name:"Amaldiçoados", description:"Da sombras surgimos... e nelas deixamos nossos inimigos!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/2/29/Bloodborne_capa.png/330px-Bloodborne_capa.png", members:["Juggernaut","Mordo","Capuz","Satana","hellverine"], powerScore: 95, attackers:[{name:"Submundo", pct:0},{name:"Submundo daken(nobu)", pct:0},{name:"Força A", pct:0},{name:"Knowhere Quasar", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Cabal com Apo e kang", pct:0},{name:"cabal com apo e mefisto", pct:0},{name:"mercenarios pagos", pct:0},{name:"fora do tempo", pct:0},{name:"orquidea", pct:0},{name:"imortais e ares", pct:0},{name:"força v", pct:0},{name:"poderosos vingadores", pct:0},{name:"fabulosos vingadores", pct:0},{name:"liberdade", pct:0},{name:"perseguidores noturno", pct:0},{name:"ucm", pct:0},{name:"clube do inferno", pct:0}]},
+  { id:"Thunderbolts", name:"Thunderbolts", description:"Os thunderbolts entram em cena - caos, força e rendenção em cada golpe!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/a/a3/Thunderbolts_Vol_2_1.jpg/250px-Thunderbolts_Vol_2_1.jpg", members:["Hiperion","Treinador","Victoria Hand","Fantasma","Soprano"], powerScore: 82, attackers:[{name:"Iluminati e odin", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais Ares", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Fabulosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"UCM", pct:0},{name:"Clube do Inferno", pct:0},]},
+  { id:"Liberdade", name:"Liberdade", description:"Lutamos por Justiça, vencemos pela união.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Captain_America_Shield.svg/250px-Captain_America_Shield.svg.png", members:["Peggy Carter","Patriota","Falcão Joaquin","Capitão America Sam","Maquina de Combate"], powerScore: 75, attackers:[{name:"UCM", pct:0},]},
+  { id:"Sociedade Aranha", name:"Sociedade Aranha", description:"Conectados pela teia, imparáveis na batalha.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Peter B. Parker","Pavitr","Peni Parker","Aranha Fantasma","Noir"], powerScore: 80, attackers:[{name:"Arma-x23", pct:0},{name:"Gama Apo", pct:0},{name:"Mente coletiva skrul", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Def sec APO", pct:0},{name:"Iluminati", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Aniquiladores e mefisto", pct:0},{name:"imortais e venom/wheave/doom/dormu/negativo", pct:0},{name:"Astral", pct:0},{name:"Thunderbolts", pct:0},{name:"Clube do inferno", pct:0}]},
+  { id:"Iluminati", name:"Iluminati", description:"O poder do conhecimento molda o destino do universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/9/91/New_Avengers_Vol_3_31.jpg/250px-New_Avengers_Vol_3_31.jpg", members:["Hank Pym","Raio Negro","Pantera Shuri","Senhor Fantastico","Capitão Britania"], powerScore: 90, attackers:[{name:"Gama", pct:0},{name:"Iluminati Quasar", pct:0},{name:"Sexteto de guerra/macabro(mysterio)", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Imortais wheave/dormu/quasar", pct:0},{name:"Força V", pct:0}]},
+  { id:"Aniquiladores", name:"Aniquiladores", description:"Onde chegamos nada sobrevive.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos Ultimato","Gorr","Gladiador","Ultimus","Surfista Prateado"], powerScore: 98, attackers:[{name:"Iluminati", pct:0},{name:"Eternos Apo Kestrel Nick", pct:0},{name:"Arma x Ares", pct:0},{name:"Mente coletiva Knul", pct:0},{name:"Def sec Apo/Odin", pct:0},{name:"Iluminati ou com Apo", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Xtremo odin", pct:0},{name:"cabal e kang emma/Apo Quasar", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Imortais Ares/Dormu/Quasar", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"UCM", pct:0},{name:"Clube do inferno Odin", pct:0}]},
+  { id:"Mente Coletiva", name:"Mente Coletiva", description:"Uma só consciência, mil formas de vencer.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Duende Vermelho","Cavaleiro do Vazio","Carnificina","Gwenon","Venom"], powerScore: 85, attackers:[{name:"Submundo", pct:0},{name:"Força A", pct:0},{name:"Arma-x23", pct:0},{name:"Gama", pct:0},{name:"Mente coletiva e Skrul", pct:0},{name:"knowhere", pct:0},{name:"Def sec Quik/wheave", pct:0},{name:"iluminati", pct:0},{name:"Novos Vingadores", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Fora do tempo", pct:0},{name:"Perseguidores noturno", pct:0}]},
+  { id:"Bifrost", name:"Bifrost", description:"Abrindo portais, trazendo a fúria dos Deuses!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Ring17.jpg/250px-Ring17.jpg", members:["Vahl","Loki","Bill Raio","Loki Teen","Sylvie"], attackers:[{name:"Submundo", pct:0},{name:"Eternos e doom dormu/wheave emma 2099", pct:0},{name:"Darkhold Quik", pct:0},{name:"Força A", pct:0},{name:"Arma-x23 quik/doom", pct:0},{name:"Gama", pct:0},{name:"Semente da Morte", pct:0},{name:"Mente coletiva", pct:0},{name:"Def sec e quik/quasar", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Cabal doom kang", pct:0},{name:"Imortais Dormu", pct:0},{name:"Amaldiçoados", pct:0}]},
+  { id:"Tropa Nova", name:"Tropa Alfa", description:"Justiça cósmica na velocidade da luz", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Wolverine","Solaris"], attackers:[{name:"Iluminati", pct:0},{name:"Mercenarios Pagos ", pct:0},{name:"Fora do tempo com e sem cav/quasar", pct:0},{name:"Imortais Quasar", pct:0},{name:"UCM3", pct:0},{name:"Guerreiros Secreto", pct:0}]},
 ];
 
 function renderTeams(list){
@@ -234,7 +363,8 @@ function renderTeams(list){
     const li=document.createElement('li');
     li.className='team-card';
     li.dataset.id=t.id;
-    li.innerHTML=`<img src="${t.image}" alt="${t.name}"><div class="team-info"><strong>${t.name}</strong><small>${t.members.join(' • ')}</small></div><div class="team-power">⚡${Math.floor(Math.random()*30+70)}%</div>`;
+    const power = t.powerScore || Math.floor(Math.random()*30+70);
+    li.innerHTML=`<img src="${t.image}" alt="${t.name}"><div class="team-info"><strong>${t.name}</strong><small>${t.members.join(' • ')}</small></div><div class="team-power">⚡${power}%</div>`;
     li.onclick=()=>selectTeam(t.id);
     teamsListEl.appendChild(li);
   });
@@ -247,6 +377,8 @@ function selectTeam(id){
   if(card) card.classList.add('active');
   const team=teamsData.find(x=>x.id===id);
   if(!team) return;
+  
+  currentDefenseTeam = team; // Salva o time selecionado para o simulador
   teamTitleEl.textContent=team.name;
   teamShortEl.textContent=team.description;
 
@@ -267,14 +399,45 @@ function selectTeam(id){
   });
 
   showOverview(team);
+  renderSimulator(); // Chama a função para popular o simulador
+}
+
+function getColorForPower(power) {
+    const p = parseInt(power);
+    if (p >= 85) return '#2ecc71'; // Verde forte (Alta chance)
+    if (p >= 75) return '#ffd166'; // Amarelo/Laranja (Média chance)
+    return '#f75555'; // Vermelho (Baixa chance)
 }
 
 function showOverview(team){
+  const teamCard = document.querySelector(`[data-id="${team.id}"]`);
+  let power = '??';
+  if (teamCard) {
+    const powerEl = teamCard.querySelector('.team-power');
+    if (powerEl) {
+      power = powerEl.textContent.replace('⚡', '').replace('%', '');
+    }
+  }
+
   contentInner.innerHTML=`
     <h3>${team.name} — Visão Geral</h3>
-    <p class="hint" style="margin-top:8px;">${team.description}</p>
-    <strong>Membros:</strong>
-    <ul style="margin-top:6px;">${team.members.map(m=>`<li>• ${m}</li>`).join('')}</ul>
+    <div class="team-stats">
+      <div class="stat-card">
+        <strong>Força Estimada</strong>
+        <span class="stat-value power-rating" style="--power-color:${getColorForPower(parseInt(power))};">⚡${power}%</span>
+      </div>
+      <div class="stat-card">
+        <strong>Estratégia</strong>
+        <span class="stat-value strategy-text">${team.description}</span>
+      </div>
+    </div>
+    
+    <h4 style="margin-top: 20px; color: var(--accent-2);">Integrantes Principais:</h4>
+    <div class="members-grid">
+      ${team.members.map(m=>`
+        <div class="member-chip">${m}</div>
+      `).join('')}
+    </div>
   `;
 }
 
@@ -299,6 +462,126 @@ function showNotes(team){
   }
 }
 
+// =======================================================
+// SIMULADOR DE BATALHAS (LÓGICA MSF)
+// =======================================================
+
+const attackerTeams = teamsData.map(t => ({ id: t.id, name: t.name, powerScore: t.powerScore || 80 }));
+
+const warRooms = [
+  { name: "Sem Bônus", modifier: 1.0 },
+  { name: "Hangar (+Deflect)", modifier: 1.05 },
+  { name: "Carga (+Vida/Dano Defensor)", modifier: 1.15 },
+  { name: "Ponte (+Contra-Ataque)", modifier: 1.1 },
+  { name: "Enfermaria (+Cura Defensor)", modifier: 1.1 },
+  { name: "Arsenal (+Dano/Vida Atacante - BOOSTER)", modifier: 0.9 }
+];
+
+function renderSimulator() {
+  if (!currentDefenseTeam) {
+    simulatorContainer.innerHTML = '<p id="simStatus">⚠️ Selecione um **Time de Defesa** para começar.</p>';
+    return;
+  }
+
+  const defensePower = currentDefenseTeam.powerScore || 80;
+  // Filtra o time de defesa atual para não ser selecionado como atacante
+  const availableAttackers = attackerTeams.filter(t => t.id !== currentDefenseTeam.id);
+  
+  const teamOptions = availableAttackers.map(t => 
+    `<option value="${t.id}" data-power="${t.powerScore || 80}">${t.name} (Poder: ${t.powerScore || 80}%)</option>`
+  ).join('');
+
+  const roomOptions = warRooms.map((r, index) => 
+    `<option value="${index}">${r.name}</option>`
+  ).join('');
+
+  simulatorContainer.innerHTML = `
+    <h3>Simulação vs ${currentDefenseTeam.name}</h3>
+    <div class="sim-controls">
+      <strong>Time Atacante:</strong>
+      <select id="attackerSelect">
+        ${teamOptions}
+      </select>
+
+      <strong>Bônus da Sala (War):</strong>
+      <select id="roomSelect">
+        ${roomOptions}
+      </select>
+
+      <button id="runSimBtn">💥 Rodar Simulação</button>
+    </div>
+
+    <div id="simResultArea" class="sim-result" style="display:none;">
+      <h4>Resultado da Batalha</h4>
+      <div id="winChance">...</div>
+      <p id="matchupHint"></p>
+    </div>
+  `;
+
+  $('#runSimBtn').onclick = runSimulation;
+}
+
+function runSimulation() {
+  const attackerSelect = $('#attackerSelect');
+  const roomSelect = $('#roomSelect');
+  const resultArea = $('#simResultArea');
+  const winChanceEl = $('#winChance');
+  const hintEl = $('#matchupHint');
+  
+  if (!currentDefenseTeam) return;
+
+  const selectedAttackerId = attackerSelect.value;
+  const selectedRoomIndex = parseInt(roomSelect.value);
+  
+  const attacker = attackerTeams.find(t => t.id === selectedAttackerId);
+  const room = warRooms[selectedRoomIndex];
+
+  // 1. Obtém o Poder Base dos Times (o valor de powerScore que definimos)
+  const attackerPower = attacker.powerScore;
+  const defensePower = currentDefenseTeam.powerScore;
+
+  // 2. Aplica o Modificador de Sala (War Room) ao Defensor
+  const modifiedDefensePower = defensePower * room.modifier;
+
+  // 3. Calcula a Razão de Poder (Power Ratio)
+  const powerRatio = attackerPower / modifiedDefensePower;
+  
+  // 4. Fórmula Base de Chance de Vitória
+  // Base de 60% se o poder for igual (1.0 * 50 + 10) - Simula a vantagem natural do Atacante no MSF
+  let winChance = (powerRatio * 50) + 10;
+  let hintText = `Resultado base calculado pela Razão de Poder (${(powerRatio * 100).toFixed(0)}%) e Bônus de Sala.`;
+
+  // 5. Sinergia e Hard Counters (Ajuste MSF)
+  if (attacker.id === "Iluminati" && currentDefenseTeam.id === "Thunderbolts") {
+      winChance += 25; 
+      hintText = `Bônus de Sinergia: ${attacker.name} é um forte "hard counter" contra ${currentDefenseTeam.name}.`;
+  } else if (attacker.id === "Thunderbolts" && currentDefenseTeam.id === "Clube do Inferno") {
+      winChance += 20; 
+      hintText = `Bônus de Sinergia: Time com alta capacidade de controle (CC) é eficaz contra times de controle como ${currentDefenseTeam.name}.`;
+  } else if (attacker.id === "Amaldicoados" && currentDefenseTeam.id === "Mente Coletiva") {
+      winChance += 10; 
+      hintText = `Bônus de Sinergia: A alta geração de bônus do ${attacker.name} ajuda a lidar com a resistência de ${currentDefenseTeam.name}.`;
+  } else if (powerRatio < 0.8) {
+      // Se o atacante for muito mais fraco
+      winChance -= 10;
+      hintText = `Penalidade: O poder do atacante é significativamente menor que o defensor, mesmo com a vantagem da War.`;
+  }
+
+  // 6. Limites (Min 5%, Max 95%)
+  winChance = Math.max(5, Math.min(95, Math.round(winChance)));
+
+  // 7. Atualiza o Resultado
+  resultArea.style.display = 'block';
+  winChanceEl.textContent = `${winChance}%`;
+  hintEl.textContent = hintText;
+  
+  // Define a cor de acordo com a chance
+  const color = getColorForPower(winChance);
+  winChanceEl.style.color = color;
+  winChanceEl.style.textShadow = `0 0 15px ${color}44`; 
+}
+
+
 searchEl.addEventListener('input',e=>{
   const v=e.target.value.trim().toLowerCase();
   const filtered=teamsData.filter(t=>t.name.toLowerCase().includes(v)||t.members.join(' ').toLowerCase().includes(v));
@@ -306,10 +589,7 @@ searchEl.addEventListener('input',e=>{
 });
 
 renderTeams(teamsData);
-selectTeam(teamsData[0].id);
+selectTeam(teamsData[0].id); // Seleciona o primeiro time ao carregar
 </script>
-
 </body>
 </html>
-
-
