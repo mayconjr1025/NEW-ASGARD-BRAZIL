@@ -4,6 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>New Asgard — Painel de Guerra com Simulador</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+
 <style>
 :root{
   --bg:#0b1220; --accent:#0b63d1; --accent-2:#ffd166;
@@ -19,20 +21,30 @@ body{
   color:var(--text);
 }
 
-/* ===== CABEÇALHO (ESTILIZAÇÃO MELHORADA) ===== */
+/* ===== CABEÇALHO (ESTILIZAÇÃO MELHORADA E INTERATIVA) ===== */
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Animação de pulso para o texto neon */
+@keyframes neon-pulse {
+  from {
+    text-shadow: 0 0 8px rgba(11,99,209,0.6), 0 0 2px var(--accent-2), 0 0 10px rgba(255,209,102,0.3);
+  }
+  to {
+    text-shadow: 0 0 12px rgba(11,99,209,0.8), 0 0 4px var(--accent-2), 0 0 18px rgba(255,209,102,0.5);
+  }
+}
+
 .topbar{
   position:sticky; top:0; z-index:50;
   display:flex; align-items:center; justify-content:space-between;
-  gap:20px; padding:16px 24px; /* Mais espaçamento */
-  background:rgba(11,18,32,0.8); /* Fundo um pouco mais escuro para contraste */
-  backdrop-filter:blur(16px); /* Efeito de vidro mais intenso */
+  gap:20px; padding:16px 24px;
+  background:rgba(11,18,32,0.8);
+  backdrop-filter:blur(16px);
   border-bottom:1px solid rgba(255,255,255,0.08);
   box-shadow:0 4px 30px rgba(0,0,0,0.3), 0 0 25px rgba(11,99,209,0.15);
-  animation: fadeInDown 0.6s ease-out; /* Animação de entrada */
+  animation: fadeInDown 0.6s ease-out;
   transition: all .3s ease;
 }
 .brand{
@@ -41,32 +53,43 @@ body{
   transition: transform .3s ease;
 }
 .brand:hover{
-  transform: scale(1.03); /* Efeito de zoom sutil no hover */
+  transform: scale(1.03);
 }
 .brand img{
   width:50px; height:50px;
   border-radius:12px;
   object-fit:cover;
-  border: 2px solid rgba(11,99,209,0.5); /* Borda sutil */
+  border: 2px solid rgba(11,99,209,0.5);
   box-shadow:0 0 12px rgba(11,99,209,0.5);
   transition: all .3s ease;
 }
 .brand:hover img{
   box-shadow:0 0 20px rgba(11,99,209,0.8);
-  transform: rotate(-5deg); /* Leve rotação no hover */
+  transform: rotate(-5deg);
+  filter: brightness(1.1);
 }
 .brand h1{
   font-size:22px;
-  color:var(--accent);
-  text-shadow:0 0 8px rgba(11,99,209,0.6), 0 0 2px var(--accent-2); /* Efeito neon aprimorado */
-  transition: text-shadow .3s ease;
+  /* Efeito de texto com gradiente */
+  background: linear-gradient(180deg, #FFFFFF 30%, #ffd166 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 8px rgba(11,99,209,0.6));
+  animation: neon-pulse 2.5s infinite alternate ease-in-out;
+  transition: all .3s ease;
 }
 .brand:hover h1 {
-  text-shadow:0 0 12px rgba(11,99,209,0.8), 0 0 4px var(--accent-2);
+  animation-play-state: paused; /* Pausa a animação para destacar o hover */
+  text-shadow:0 0 16px rgba(11,99,209,0.9), 0 0 8px var(--accent-2), 0 0 25px rgba(255,209,102,0.7);
+  background: linear-gradient(180deg, #FFFFFF 50%, #ffe4a1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
+
 .navbar{display:flex;gap:12px;flex-wrap:wrap;}
 .nav-item{
-  position:relative; /* Necessário para o pseudo-elemento ::after */
+  position:relative;
   padding:10px 16px;
   border-radius:8px;
   color:var(--text);
@@ -91,15 +114,15 @@ body{
   background:rgba(255,255,255,0.05);
 }
 .nav-item:hover::after{
-  width: 70%; /* Linha animada aparece no hover */
+  width: 70%;
 }
 .searchbar{flex:1;max-width:400px;position:relative;}
 .searchbar input{
   width:100%;
-  padding:12px 18px; /* Mais padding */
+  padding:12px 18px;
   border-radius:10px;
   border:1px solid rgba(255,255,255,0.1);
-  background:rgba(0,0,0,0.3); /* Fundo mais escuro */
+  background:rgba(0,0,0,0.3);
   color:var(--text);
   font-size: 15px;
   transition: all .3s ease;
@@ -111,7 +134,7 @@ body{
   outline:none;
   border-color:var(--accent);
   background:rgba(11, 99, 209, 0.1);
-  box-shadow:0 0 15px rgba(11,99,209,0.5), 0 0 5px rgba(11,99,209,0.3) inset; /* Sombra mais intensa no foco */
+  box-shadow:0 0 15px rgba(11,99,209,0.5), 0 0 5px rgba(11,99,209,0.3) inset;
 }
 /* ================================================================ */
 
@@ -119,29 +142,27 @@ body{
 section{padding:20px 18px;scroll-margin-top:100px;}
 /* ESTILIZAÇÃO MELHORADA PARA #inicio */
 #inicio {
-  /* Adiciona um gradiente sutil de plasma/neon */
   background: linear-gradient(180deg, var(--plasma-bg) 0%, transparent 100%);
   border: 1px solid var(--plasma-border);
   border-radius: 12px;
-  padding: 40px 18px; /* Mais padding vertical */
-  margin: 20px 18px; /* Margem para destacar */
+  padding: 40px 18px;
+  margin: 20px 18px;
   text-align: center;
-  box-shadow: 0 0 30px rgba(11,99,209,0.3); /* Sombra intensa de plasma */
+  box-shadow: 0 0 30px rgba(11,99,209,0.3);
 }
 #inicio h2{
-  color:var(--accent-2); /* Cor de destaque para o título */
+  color:var(--accent-2);
   margin-bottom: 8px;
-  font-size: 40px; /* Título maior */
+  font-size: 40px;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  /* Efeito de neon no texto */
   text-shadow: 0 0 8px rgba(255,209,102,0.6), 0 0 15px rgba(255,209,102,0.4);
 }
 #inicio p{
   color:var(--muted);
   margin-bottom: 0;
-  font-size: 18px; /* Texto de apoio maior */
+  font-size: 18px;
   font-style: italic;
 }
 
@@ -282,7 +303,6 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 .attack-list {
   list-style: none;
   display: grid;
-  /* Cria duas colunas de tamanho igual. Em telas pequenas, volta para 1 coluna */
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 10px;
   margin-top: 15px;
@@ -293,7 +313,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   align-items: center;
   padding: 10px 14px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05); /* Fundo sutil */
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all .2s;
 }
@@ -346,7 +366,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 }
 .member-chip{
   padding:6px 10px;border-radius:6px;
-  background:rgba(11,99,209,0.1); /* Cor de fundo suave do accent */
+  background:rgba(11,99,209,0.1);
   border:1px solid rgba(11,99,209,0.25);
   color:var(--accent-2);
   font-size:13px;font-weight:600;
@@ -388,7 +408,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 /* ==================================== */
 
 
-/* ===== SIMULADOR (MANTIDO IDÊNTICO) ===== */
+/* ===== SIMULADOR (ESTILOS MELHORADOS) ===== */
 #simulatorContainer{
   padding:20px;
 }
@@ -410,7 +430,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   border:1px solid var(--accent);
   margin-bottom:10px;
   font-family:inherit;
-  appearance: none; /* Remove seta padrão */
+  appearance: none;
 }
 .sim-controls button{
   width:100%;
@@ -427,21 +447,68 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   background:var(--accent);
   color:var(--text);
 }
-.sim-result h4{
-  color:var(--accent-2);
-  margin-bottom:8px;
+
+/* ESTILOS INTELIGENTES PARA O RESULTADO */
+.sim-result {
+  --result-color: var(--accent-2);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-color: var(--result-color);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--result-color), transparent 70%);
+  transition: all .4s ease-out;
 }
-#winChance{
-  font-size:36px;
-  font-weight:900;
-  text-align:center;
-  margin:15px 0;
-  text-shadow:0 0 15px rgba(255,209,102,0.4);
+.sim-result.is-good { --result-color: #2ecc71; }
+.sim-result.is-bad { --result-color: #f75555; }
+.sim-result h4 {
+  color: var(--result-color);
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 18px;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--result-color), transparent 50%);
 }
-#matchupHint{
-  color:var(--muted);
-  font-size:14px;
+.sim-result-visual {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
 }
+.win-chance-value {
+  font-size: 40px;
+  font-weight: 900;
+  flex-shrink: 0;
+  color: var(--result-color);
+  text-shadow: 0 0 15px color-mix(in srgb, var(--result-color), transparent 60%);
+}
+.win-chance-bar-container {
+  width: 100%;
+  height: 12px;
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.win-chance-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--result-color);
+  border-radius: 10px;
+  transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 0 10px var(--result-color);
+}
+.battle-breakdown {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+  background: var(--glass);
+  padding: 10px;
+  border-radius: 6px;
+}
+.battle-breakdown strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.battle-breakdown .good { color: #2ecc71; }
+.battle-breakdown .bad { color: #f75555; }
+
  /* ==================================== */
 
 /* ===== NOVO - META DE GUERRA ESTILOS (MELHORADO) (MANTIDO IDÊNTICO) ===== */
@@ -454,12 +521,11 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   gap: 15px;
 }
 .meta-card{
-  /* Estilo com mais destaque/plasma */
   background: linear-gradient(180deg, rgba(11,99,209,0.1), rgba(0,0,0,0.1));
   border: 1px solid var(--plasma-border);
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 0 15px rgba(11,99,209,0.2); /* Sombra mais intensa */
+  box-shadow: 0 0 15px rgba(11,99,209,0.2);
   transition: transform .2s, box-shadow .2s;
 }
 .meta-card:hover{
@@ -467,7 +533,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   box-shadow: 0 5px 20px rgba(11,99,209,0.4);
 }
 .meta-card h4{
-  color: var(--accent-2); /* Cor de destaque para o título */
+  color: var(--accent-2);
   margin-bottom: 8px;
   border-bottom: 1px dashed rgba(255,255,255,0.1);
   padding-bottom: 5px;
@@ -484,7 +550,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
     font-size: 12px;
     margin-top: 5px;
 }
-.meta-key-synergy { /* NOVO ESTILO PARA SINERGIA */
+.meta-key-synergy {
     font-size: 13px;
     font-weight: 600;
     color: var(--accent);
@@ -495,13 +561,13 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 .carousel-wrapper {
   position: relative;
   width: 100%;
-  padding: 0 40px; /* Espaço para os botões */
+  padding: 0 40px;
   box-sizing: border-box;
 }
 .carousel-container {
   overflow: hidden;
   cursor: grab;
-  scroll-behavior: smooth; /* Para rolagem suave com botões */
+  scroll-behavior: smooth;
 }
 .carousel-container:active {
     cursor: grabbing;
@@ -509,12 +575,12 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 .carousel-track {
   display: flex;
   gap: 15px;
-  padding-bottom: 15px; /* Evita que a sombra seja cortada */
-  -webkit-overflow-scrolling: touch; /* Melhora a rolagem em mobile */
+  padding-bottom: 15px;
+  -webkit-overflow-scrolling: touch;
 }
 .carousel-slide {
-  flex: 0 0 calc(33.33% - 10px); /* Exibe 3 slides por vez */
-  min-width: 280px; /* Largura mínima do card */
+  flex: 0 0 calc(33.33% - 10px);
+  min-width: 280px;
 }
 
 .carousel-btn {
@@ -547,15 +613,14 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   cursor: not-allowed;
 }
 
-/* Ajustes para telas menores */
 @media (max-width: 1024px) {
   .carousel-slide {
-    flex-basis: calc(50% - 8px); /* Exibe 2 slides */
+    flex-basis: calc(50% - 8px);
   }
 }
 @media (max-width: 768px) {
   .carousel-slide {
-    flex-basis: calc(100% - 10px); /* Exibe 1 slide */
+    flex-basis: calc(100% - 10px);
   }
    .carousel-wrapper {
     padding: 0 35px;
@@ -564,7 +629,7 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   .carousel-btn.next { right: -10px; }
 }
 
-/* ===== NOVO ESTILO PARA RECURSOS/LINKS ÚTEIS ===== */
+/* ===== MELHORIAS E ESTILIZAÇÃO PARA RECURSOS/LINKS ÚTEIS ===== */
 .resource-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -572,31 +637,71 @@ section{padding:20px 18px;scroll-margin-top:100px;}
   margin-top: 20px;
 }
 .resource-card{
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 15px;
-  transition: all .2s;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all .3s ease;
+  display: flex;
+  flex-direction: column;
 }
 .resource-card:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 5px 20px rgba(11,99,209,0.4);
-  background: rgba(11,99,209,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(11,99,209,0.3);
+  border-color: var(--plasma-border);
+  background: var(--plasma-bg);
 }
 .resource-card h4{
   color: var(--accent-2);
   margin-bottom: 8px;
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.resource-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  flex-grow: 1;
 }
 .resource-card a{
   color: var(--accent);
   text-decoration: none;
   font-weight: 600;
-  display: block;
-  margin-top: 5px;
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(11,99,209,0.15);
+  transition: all .2s;
 }
 .resource-card a:hover{
+  background-color: var(--accent);
+  color: var(--text);
+  box-shadow: 0 0 10px rgba(11,99,209,0.5);
+}
+.youtube-links {
+  list-style: none;
+  margin-top: 10px;
+  padding-left: 0;
+}
+.youtube-links li {
+  margin-bottom: 8px;
+}
+.youtube-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  margin-top: 0;
+  background: transparent !important;
+  color: var(--muted) !important;
+}
+.youtube-links a:hover {
+  color: var(--accent-2) !important;
   text-decoration: underline;
+  box-shadow: none;
 }
 /* ==================================== */
 
@@ -613,14 +718,216 @@ textarea.note-box{
 }
 .note-save:hover{opacity:.9}
 
-/* ===== FOOTER MELHORADO (MANTIDO IDÊNTICO) ===== */
-footer{
-  padding:20px 18px;
+/* ==================================== */
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start;gap:10px}}
+
+/* ===== ESTILOS DA SEÇÃO DE CONTATO (MELHORADOS E ATUALIZADOS) ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#contato{
   text-align:center;
-  color:var(--muted);
-  background:rgba(0,0,0,0.5);
-  border-top:1px solid rgba(255,255,255,0.05);
-  line-height:1.6;
+  background:linear-gradient(180deg, var(--plasma-bg) 0%, transparent 80%);
+  border-radius:16px;
+  border:1px solid var(--plasma-border);
+  max-width:900px;
+  margin:40px auto;
+  padding:40px;
+  box-shadow:0 0 50px rgba(11,99,209,0.25), 0 0 15px rgba(11,99,209,0.1) inset;
+  animation: fadeInUp 0.8s ease-out;
+}
+#contato h2{
+    color: var(--accent-2);
+    text-shadow: 0 0 10px rgba(255,209,102,0.5);
+    font-size: 32px;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+#contato h2::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background: var(--accent-2);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--accent-2);
+}
+
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr 350px;
+  gap:25px;
+  align-items:start;
+  margin-top: 30px;
+}
+@media(max-width:900px){ .contact-grid{grid-template-columns:1fr} }
+
+.contact-card{
+  background:rgba(255,255,255,0.02);
+  border-radius:12px;
+  padding:25px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(11, 99, 209, 0.4);
+}
+
+.contact-form input, .contact-form textarea{
+  width:100%;padding:14px;border-radius:8px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(0,0,0,0.4);
+  color:var(--text);margin-bottom:15px;font-family:inherit;
+  transition: all .25s ease;
+  font-size: 15px;
+}
+.contact-form input:focus, .contact-form textarea:focus{
+    outline:none;
+    border-color:var(--accent-2);
+    background: rgba(255,209,102,0.05);
+    box-shadow:0 0 12px rgba(255,209,102,0.5), 0 0 4px rgba(255,209,102,0.3) inset;
+}
+.contact-form button{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;
+  border:none;background:var(--accent-2);color:#071022;font-weight:700;cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 4px 15px rgba(255,209,102,0.3);
+  font-size: 16px;
+}
+.contact-form button:hover{
+    opacity:.9;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:0 6px 20px rgba(255,209,102,0.4);
+}
+#contactClear{
+    background:transparent !important;
+    border:1px solid rgba(255,255,255,0.15) !important;
+    color:var(--muted) !important;
+    font-weight:600 !important;
+    box-shadow:none !important;
+}
+#contactClear:hover{
+    background:rgba(255,255,255,0.1) !important;
+    color: var(--text) !important;
+    transform: none;
+}
+
+.contact-card h3{
+    color:var(--accent);
+    border-bottom: 1px dashed var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+.contact-info{
+    color:var(--muted);
+    font-size:15px;
+    line-height: 2.2;
+}
+.contact-info p {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.contact-info a {
+    color: var(--accent-2);
+    text-decoration: none;
+    transition: color .2s;
+}
+.contact-info a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.whatsapp-btn{
+  display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:10px;
+  background:linear-gradient(90deg,#06d755, #00a854);
+  color:#fff;font-weight:700;text-decoration:none;
+  border:none;margin-top:20px;
+  box-shadow:0 4px 15px rgba(6, 215, 85, 0.4);
+  transition:transform .2s, box-shadow .2s;
+  font-size: 16px;
+}
+.whatsapp-btn:hover{
+    transform: translateY(-3px) scale(1.03);
+    box-shadow:0 8px 20px rgba(6, 215, 85, 0.5);
+}
+
+/* ===== FOOTER MELHORADO, ESTILIZADO E INTERATIVO ===== */
+footer{
+  padding: 40px 20px;
+  text-align:center;
+  background: linear-gradient(180deg, rgba(0,0,0,0.2), #071022 100%);
+  border-top:1px solid var(--plasma-border);
+  margin-top: 30px;
+}
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.footer-credits {
+  line-height: 1.7;
+}
+.footer-credits .collaborator-info {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.footer-credits .collaborator-info strong {
+  color: var(--accent-2);
+  font-weight: 600;
+}
+.footer-socials {
+  display: flex;
+  gap: 15px;
+  margin: 10px 0;
+}
+.footer-socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--accent-2);
+  text-decoration: none;
+  transition: all .3s ease;
+}
+.footer-socials a svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor; /* O SVG herda a cor do link */
+}
+.footer-socials a:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 0 20px rgba(11, 99, 209, 0.7);
+}
+.footer-socials a:hover svg {
+    fill: var(--text);
+}
+.footer-copyright {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 20px;
+  width: 100%;
 }
 footer a {
     color: var(--accent);
@@ -629,108 +936,6 @@ footer a {
 }
 footer a:hover {
     color: var(--accent-2);
-}
-/* ==================================== */
-
-@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start;gap:10px}}
-/* ===== ESTILOS ADICIONAIS PARA ABA CONTATO - ESTILIZAÇÃO MELHORADA AQUI! ===== */
-#contato{
-  text-align:center;
-  background:linear-gradient(180deg, var(--plasma-bg) 0%, transparent 100%); /* Plasma sutil */
-  border-radius:12px;
-  border:1px solid var(--plasma-border); /* Borda de plasma */
-  max-width:850px; /* Aumentado ligeiramente */
-  margin:30px auto;
-  padding:30px; /* Mais padding */
-  box-shadow:0 0 40px rgba(11,99,209,0.15); /* Sombra mais intensa */
-}
-#contato h2{
-    color: var(--accent-2);
-    text-shadow: 0 0 8px rgba(255,209,102,0.4);
-}
-
-.contact-grid{
-  display:grid;
-  grid-template-columns:1fr 320px;
-  gap:20px; /* Aumentado o gap */
-  align-items:start;
-  margin-top: 20px;
-}
-@media(max-width:900px){ .contact-grid{grid-template-columns:1fr} }
-
-/* Card de Contato - Melhoria de Estilo */
-.contact-card{
-  background:rgba(255,255,255,0.05); /* Fundo mais visível */
-  border-radius:12px;
-  padding:20px; /* Mais padding */
-  border:1px solid rgba(255,255,255,0.05);
-  box-shadow:0 4px 15px rgba(0,0,0,0.3);
-}
-
-/* Formulário de Contato - Inputs Estilizados */
-.contact-form input, .contact-form textarea{
-  width:100%;padding:12px;border-radius:8px;
-  border:1px solid rgba(255,255,255,0.1);
-  background:rgba(0,0,0,0.4); /* Fundo escuro */
-  color:var(--text);margin-bottom:12px;font-family:inherit;
-  transition:border-color .2s, box-shadow .2s;
-}
-.contact-form input:focus, .contact-form textarea:focus{
-    outline:none;
-    border-color:var(--accent-2);
-    box-shadow:0 0 10px rgba(255,209,102,0.5); /* Sombra amarela no foco */
-}
-.contact-form button{
-  display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:10px;
-  border:none;background:var(--accent-2);color:#071022;font-weight:700;cursor:pointer;
-  transition:all .2s;
-  box-shadow:0 4px 10px rgba(255,209,102,0.3); /* Sombra amarela no botão principal */
-}
-.contact-form button:hover{
-    opacity:.9;
-    transform: translateY(-1px);
-}
-/* Estilização para o botão Limpar */
-#contactClear{
-    background:rgba(255,255,255,0.08) !important;
-    border:1px solid rgba(255,255,255,0.15) !important;
-    color:var(--muted) !important;
-    font-weight:600 !important;
-    box-shadow:none !important;
-}
-#contactClear:hover{
-    background:rgba(255,255,255,0.15) !important;
-}
-
-/* Informações Rápidas - Estilizadas */
-.contact-card h3{
-    color:var(--accent); /* Título de Informações Rápidas em azul */
-    border-bottom: 1px dashed rgba(11,99,209,0.4);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
-}
-.contact-info{color:var(--muted);font-size:14px; line-height: 1.8;}
-.contact-info a {
-    color: var(--accent-2); /* Links em amarelo */
-    text-decoration: none;
-    transition: color .2s;
-}
-.contact-info a:hover {
-    color: var(--accent);
-}
-
-/* Botão do WhatsApp */
-.whatsapp-btn{
-  display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;
-  background:linear-gradient(90deg,#06d755, #00a854); /* Gradiente Verde */
-  color:#071022;font-weight:700;text-decoration:none;
-  border:none;margin-top:15px;
-  box-shadow:0 4px 12px rgba(6, 215, 85, 0.4);
-  transition:transform .2s, box-shadow .2s;
-}
-.whatsapp-btn:hover{
-    transform: translateY(-2px);
-    box-shadow:0 6px 15px rgba(6, 215, 85, 0.6);
 }
 /* ==================================== */
 </style>
@@ -794,10 +999,10 @@ footer a:hover {
       <div class="carousel-container" id="metaCarousel">
         <div class="meta-grid carousel-track">
           <div class="meta-card carousel-slide">
-            <h4>F4-UCM Prof. X (Defesa Top Tier 1)</h4>
-            <p>Integrantes: UCM, Professor X, Franklin Richards.</p>
-            <p class="meta-key-synergy">Sinergia Chave: Controle de Campo e Dano em Área.</p>
-            <p class="meta-counter-hint">Counter Recomendado: UCM + Prof X + Emma Frost (Combinação de Controle e Burst).</p>
+            <h4>Prof X e Mutantes(Defesa Top Tier 1)</h4>
+            <p>Integrantes: Prof X, Cable, Forge, Omega, Fênix.</p>
+            <p class="meta-key-synergy">Sinergia Chave: Defesa hibrida com foco em manipulação de turno, controle de campo e resistência prolongada.</p>
+            <p class="meta-counter-hint">Counter Recomendado: .</p>
           </div>
           <div class="meta-card carousel-slide">
             <h4>Amaldiçoados e Mefisto (Defesa Top Tier 2)</h4>
@@ -812,43 +1017,43 @@ footer a:hover {
             <p class="meta-counter-hint">Counter Recomendado: Força Fênix + Mefisto + Tempestade + Noturno.</p>
           </div>
           <div class="meta-card carousel-slide">
-            <h4>Brinstone (Defesa Top Tier 4)</h4>
+            <h4>Orquidea Skrul (Defesa Top Tier 4)</h4>
+            <p>Integrantes: Nimrod, Lady Letal, Sentinela, Sentinela Omega, Skrul.</p>
+            <p class="meta-key-synergy">Sinergia Chave: Combinação de durabilidade, controle de debuffs.</p>
+            <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
+          </div>
+          <div class="meta-card carousel-slide">
+            <h4> X-Men Imortais Noturno Cav Negro (Defesa Top Tier 5)</h4>
+            <p>Integrantes: Noturno, cable, Cavaleiro Negro, Jean Gray, Fera.</p>
+            <p class="meta-key-synergy">Sinergia Chave: Combinação de manipulação de turno, controle de campo e resistência em batalha.</p>
+            <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
+          </div>
+          <div class="meta-card carousel-slide">
+            <h4>Thunderbolts (Defesa Top Tier 6)</h4>
             <p>Integrantes: A definir.</p>
             <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
             <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
           </div>
           <div class="meta-card carousel-slide">
-            <h4>(Vazio) (Defesa Top Tier 5)</h4>
+            <h4>Aniquiladores (Defesa Top Tier 7)</h4>
             <p>Integrantes: A definir.</p>
             <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
             <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
           </div>
           <div class="meta-card carousel-slide">
-            <h4>(Vazio) (Defesa Top Tier 6)</h4>
+            <h4>Piratas Sideral (Defesa Top Tier 8)</h4>
             <p>Integrantes: A definir.</p>
             <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
             <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
           </div>
           <div class="meta-card carousel-slide">
-            <h4>(Vazio) (Defesa Top Tier 7)</h4>
+            <h4>Tropa Nova Ares America Chavez (Defesa Top Tier 9)</h4>
             <p>Integrantes: A definir.</p>
             <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
             <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
           </div>
           <div class="meta-card carousel-slide">
-            <h4>(Vazio) (Defesa Top Tier 8)</h4>
-            <p>Integrantes: A definir.</p>
-            <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
-            <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
-          </div>
-          <div class="meta-card carousel-slide">
-            <h4>(Vazio) (Defesa Top Tier 9)</h4>
-            <p>Integrantes: A definir.</p>
-            <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
-            <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
-          </div>
-          <div class="meta-card carousel-slide">
-            <h4>(Vazio) (Defesa Top Tier 10)</h4>
+            <h4>Clube do Inferno (Defesa Top Tier 10)</h4>
             <p>Integrantes: A definir.</p>
             <p class="meta-key-synergy">Sinergia Chave: A definir.</p>
             <p class="meta-counter-hint">Counter Recomendado: A definir.</p>
@@ -890,62 +1095,86 @@ footer a:hover {
 
 <section id="recursos">
   <h2>🔗 Recursos e Links Úteis</h2>
-  <p class="hint">Acesso rápido às ferramentas essenciais da comunidade MSF.</p>
+  <p class="hint">Acesso rápido às ferramentas e criadores de conteúdo essenciais da comunidade MSF.</p>
 
   <div class="resource-grid">
     <div class="resource-card">
-        <h4>MSF.gg — Ferramenta Oficial</h4>
-        <p style="color:var(--muted); font-size:14px;">O site fundamental para checar o inventário, a progressão e as habilidades de todos os personagens.</p>
-        <a href="https://msf.gg/" target="_blank">Acessar MSF.gg</a>
+      <h4><span style="font-size:24px;">🌐</span> MSF.gg — Ferramenta Oficial</h4>
+      <p>O site fundamental para checar o inventário, a progressão e as habilidades de todos os personagens.</p>
+      <a href="https://msf.gg/" target="_blank">Acessar MSF.gg</a>
     </div>
     <div class="resource-card">
-        <h4>MSF Blog Oficial</h4>
-        <p style="color:var(--muted); font-size:14px;">Fique por dentro das últimas notícias, eventos e notas de patchs (Atualizações).</p>
-        <a href="https://www.marvelstrikeforce.com/en/updates" target="_blank">Ler Blog Oficial</a>
+      <h4><span style="font-size:24px;">📰</span> MSF Blog Oficial</h4>
+      <p>Fique por dentro das últimas notícias, eventos e notas de patchs (Atualizações).</p>
+      <a href="https://www.marvelstrikeforce.com/en/updates" target="_blank">Ler Blog Oficial</a>
     </div>
     <div class="resource-card">
-        <h4>Melhores Canais  (Youtube)</h4>
-        <p style="color:var(--muted); font-size:14px;">Canais da comunidade brasileira focados em dicas de War, Raids e Arena.</p>
-        <a href="#" target="_blank"></a>
-        <a href="#" target="_blank"></a>
+      <h4><span style="font-size:24px;">📺</span> Canais Recomendados (YouTube)</h4>
+      <p>Criadores de conteúdo focados em dicas de Guerra, Raids, Crisol e Arena para todos os níveis de jogadores.</p>
+      <ul class="youtube-links">
+        <li><a href="https://www.youtube.com/@Tauna" target="_blank">➤ ValleyFlyin</a></li>
+        <li><a href="https://www.youtube.com/@MobileGamer365" target="_blank">➤ MobileGamer365</a></li>
+        <li><a href="https://www.youtube.com/@Boilon" target="_blank">➤ Boilon</a></li>
+        <li><a href="https://www.youtube.com/@RaygeGaming" target="_blank">➤ Rayge Gaming</a></li>
+      </ul>
     </div>
   </div>
 </section>
+
 <section id="contato">
   <h2>Fale com o Administrador</h2>
-  <p style="color:var(--muted); margin-bottom:18px;">Fale comigo para sugestão de times, ajustes no painel ou parcerias — respondo pelo WhatsApp ou por e-mail.</p>
+  <p style="color:var(--muted); margin-bottom:18px;">Sugestões de times, ajustes no painel ou parcerias? Entre em contato!</p>
 
   <div class="contact-grid">
     <div class="contact-card">
-        <h3 style="color:var(--accent-2);margin-bottom:8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px;">✍️ Envie uma Mensagem</h3>
+        <h3 style="color:var(--accent-2);margin-bottom:8px; border-bottom-color: var(--accent-2);">✍️ Envie uma Mensagem</h3>
       <form id="contactForm" class="contact-form">
         <input type="text" id="c_name" placeholder="Seu nome" required />
         <input type="email" id="c_email" placeholder="Seu e-mail" required />
-        <textarea id="c_message" rows="5" placeholder="Mensagem (ex.: alteração no time X...) " required></textarea>
+        <textarea id="c_message" rows="5" placeholder="Sua mensagem (ex.: alteração no time X...)" required></textarea>
         <div style="display:flex;gap:10px;align-items:center;">
-          <button type="submit">✉️ Enviar Mensagem</button>
-          <button type="button" id="contactClear" style="padding:10px 14px;">Limpar</button>
+          <button type="submit">✉️ Enviar</button>
+          <button type="button" id="contactClear">Limpar</button>
         </div>
-        <div id="contactFeedback" style="margin-top:10px;color:var(--muted);font-size:13px;display:none;"></div>
+        <div id="contactFeedback" style="margin-top:15px;color:var(--muted);font-size:14px;display:none;"></div>
       </form>
     </div>
 
     <div class="contact-card" style="text-align:left;">
-      <h3 style="color:var(--accent);">⚡ Contato Rápido</h3>
+      <h3>⚡ Informações de Contato</h3>
       <div class="contact-info">
-        <p><strong>Maycon Junior</strong></p>
-        <p>📱 <a href="https://wa.me/5561982801931" target="_blank">(61) 9 8280-1931 — WhatsApp</a></p>
-        <p>✉️ <span style="color:var(--muted)">mayconjunior576@gmail.com</span></p>
-        <p style="margin-top:15px;color:var(--muted)">Tempo de resposta médio: dentro de 24 horas</p>
-        <a class="whatsapp-btn" href="https://wa.me/5561982801931" target="_blank">💬 Abrir WhatsApp</a>
+        <p><span style="font-size: 18px;">👤</span> <strong>Maycon Junior</strong></p>
+        <p><span style="font-size: 18px;">💬</span> <a href="https://wa.me/5561982801931" target="_blank">WhatsApp: (61) 9 8280-1931</a></p>
+        <p><span style="font-size: 18px;">✉️</span> <a href="mailto:mayconjunior576@gmail.com">mayconjunior576@gmail.com</a></p>
+        <p><span style="font-size: 18px;">📸</span> <a href="https://www.instagram.com/mayconjunior647" target="_blank">Instagram: @mayconjunior647</a></p>
+        <p style="margin-top:15px; font-size: 13px; line-height: 1.5;">🕒 Tempo médio de resposta: 24 horas.</p>
+        <a class="whatsapp-btn" href="https://wa.me/5561982801931" target="_blank">💬 Chamar no WhatsApp</a>
       </div>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>© 2025 New Asgard Brazil — Painel de Batalha MSF.</p>
-  <p>Desenvolvido por <a href="#" onclick="scrollToSection('contato'); return false;">Maycon Junior</a>. Todos os direitos reservados.</p>
+  <div class="footer-content">
+    <div class="footer-credits">
+      <p>Desenvolvido por <a href="#" onclick="scrollToSection('contato'); return false;">Maycon Junior</a></p>
+      <p class="collaborator-info">Colaboração Especial: <strong>José Portuga</strong> (Líder da New Asgard Brazil)</p>
+    </div>
+    <div class="footer-socials">
+      <a href="https://wa.me/5561982801931" target="_blank" title="WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M12.04 2.01C6.58 2.01 2.13 6.46 2.13 12c0 1.74.45 3.48 1.34 5l-1.4 5.09 5.21-1.37c1.45.81 3.08 1.23 4.76 1.23h.01c5.46 0 9.91-4.45 9.91-9.91s-4.45-9.9-9.91-9.9zM12.04 21.09h-.01c-1.61 0-3.2-.4-4.6-1.18l-.33-.2-3.41.9.92-3.32-.22-.35c-.86-1.39-1.32-3-1.32-4.67 0-4.4 3.57-7.97 7.97-7.97 2.15 0 4.15.83 5.64 2.31s2.31 3.5 2.31 5.64-3.57 7.97-7.97 7.97zm4.56-6.32c-.25-.12-1.47-.73-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.98-.15.17-.29.19-.54.06-.25-.12-1.06-.39-2-1.23-.74-.66-1.23-1.48-1.38-1.73-.15-.25-.02-.38.1-.51.11-.11.25-.29.37-.43s.17-.21.25-.35c.08-.14.04-.27 0-.39-.15-.25-1.07-2.58-1.47-3.54-.39-.95-.79-.82-.56-.84h-.29c-.21 0-.46.06-.68.31-.22.25-.86.84-.86 2.05s.88 2.38 1 2.55c.12.17 1.74 2.65 4.22 3.72.59.25 1.05.4 1.41.52.6.2 1.15.17 1.58.1.48-.08 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.11-.22-.17-.47-.3z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/mayconjunior647" target="_blank" title="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8c1.99 0 3.6-1.61 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+      </a>
+      <a href="mailto:mayconjunior576@gmail.com" title="E-mail">
+        <svg viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+      </a>
+    </div>
+    <div class="footer-copyright">
+      <p>© 2025 New Asgard Brazil — Painel de Batalha MSF. Todos os direitos reservados.</p>
+    </div>
+  </div>
 </footer>
 
 <script>
@@ -976,87 +1205,90 @@ document.querySelectorAll('.nav-item').forEach(item=>{
 });
 
 const teamsData = [
-  // ** NOVO CAMPO: strategy (Estratégia) adicionado para a nova aba **
-  { id:"vigilantes", name:"Vigilantes", description:"Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], powerScore: 78, attackers:[{name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul/Odin", pct:0}], strategy: {
+  // ** NOVO CAMPO: strategy (Estratégia) e tags adicionados para a nova aba e simulador **
+  { id:"vigilantes", name:"Vigilantes", tags:["Habilidade", "Dano"], description:"Força de resposta urbana, tática e furtiva.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/6/6b/Punisher_Netflix.jpg/250px-Punisher_Netflix.jpg", members:["Sabre de Prata","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], powerScore: 78, attackers:[{name:"Iluminati", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Aniquiladores e Knul/Odin", pct:0}], strategy: {
     text: "O time Vigilantes utiliza furtividade e dano massivo em um alvo único. A chave é proteger Sabre de Prata, o principal causador de dano. Idealmente, ele deve estar na posição central.",
     positioning: ["Elektra", "Justiceiro", "Sabre de Prata", "Assasímio", "Demolidor Moderno"],
     buffs: ["Furtividade (Inicial)", "Aumento de Dano (Sabre)"]
   }},
-  { id:"clube_inferno", name:"Clube do Inferno", description:"Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], powerScore: 92, attackers:[{name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}], strategy: {
+  { id:"clube_inferno", name:"Clube do Inferno", tags:["Mutante", "Controle"], description:"Conclave esotérico e caos controlado.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Emma_Frost_%28Modern%29.webp.png/250px-Emma_Frost_%28Modern%29.webp.png", members:["Emma Frost","Madelyne Pryor","Azazel","Sebastian Shaw","Rachel Summer"], powerScore: 92, attackers:[{name:"Submundo e Kestrel", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais e Gorr Treinador/Knul/Knul Ares/Quasar", pct:90}], strategy: {
     text: "Esta é uma defesa de controle de combate (CC). Sebastian Shaw serve como o tank principal. Rachel Summer deve ser protegida na ponta oposta para garantir que a lentidão e o controle de turno atinjam o alvo.",
     positioning: ["Rachel Summer", "Emma Frost", "Azazel", "Madelyne Pryor", "Sebastian Shaw"],
     buffs: ["Lentidão (Inicial - Rachel)", "Barreira (Sebastian Shaw)"]
   }},
-  { id:"UCM", name:"UCM", description:"Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], powerScore: 88, attackers:[{name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}]},
-  { id:"Amaldicoados", name:"Amaldiçoados", description:"Da sombras surgimos... e nelas deixamos nossos inimigos!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/2/29/Bloodborne_capa.png/330px-Bloodborne_capa.png", members:["Juggernaut","Mordo","Capuz","Satana","hellverine"], powerScore: 95, attackers:[{name:"Submundo", pct:0},{name:"Submundo daken(nobu)", pct:0},{name:"Força A", pct:0},{name:"Knowhere Quasar", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Cabal com Apo e kang", pct:0},{name:"cabal com apo e mefisto", pct:0},{name:"mercenarios pagos", pct:0},{name:"fora do tempo", pct:0},{name:"orquidea", pct:0},{name:"imortais e ares", pct:0},{name:"força v", pct:0},{name:"poderosos vingadores", pct:0},{name:"fabulosos vingadores", pct:0},{name:"liberdade", pct:0},{name:"perseguidores noturno", pct:0},{name:"ucm", pct:0},{name:"clube do inferno", pct:0}], strategy: {
+  { id:"UCM", name:"UCM", tags:["Bio", "Tech", "Sinergia"], description:"Unidos pelo destino, imparáveis na batalha!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Tocha Humana","Mulher Invisivel","O coisa","Franklin Richards","Senhor Fantastico"], powerScore: 88, attackers:[{name:"Mercenarios Pagos e Scarlet Zumbi", pct:0},{name:"Mercenarios Pagos e Quasar", pct:0},{name:"Mercenarios Pagos Quasar e Ares", pct:0},{name:"Ares Mef Apo Kang Quasar", pct:0}]},
+  { id:"Amaldicoados", name:"Amaldiçoados", tags:["Místico", "Sustentação"], description:"Da sombras surgimos... e nelas deixamos nossos inimigos!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/2/29/Bloodborne_capa.png/330px-Bloodborne_capa.png", members:["Juggernaut","Mordo","Capuz","Satana","hellverine"], powerScore: 95, attackers:[{name:"Submundo", pct:0},{name:"Submundo daken(nobu)", pct:0},{name:"Força A", pct:0},{name:"Knowhere Quasar", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Cabal com Apo e kang", pct:0},{name:"cabal com apo e mefisto", pct:0},{name:"mercenarios pagos", pct:0},{name:"fora do tempo", pct:0},{name:"orquidea", pct:0},{name:"imortais e ares", pct:0},{name:"força v", pct:0},{name:"poderosos vingadores", pct:0},{name:"fabulosos vingadores", pct:0},{name:"liberdade", pct:0},{name:"perseguidores noturno", pct:0},{name:"ucm", pct:0},{name:"clube do inferno", pct:0}], strategy: {
     text: "Defesa com foco em Dano com o HELLVERINE. Juggernaut é o principal *taunt* para absorver dano. Mordo deve ser posicionado na lateral do Juggernaut para curar e aplicar mais lentidão. É um time com alta sustentação.",
     positioning: ["Satana", "hellverine", "Juggernaut", "Mordo", "Capuz"],
     buffs: ["Provocação (Juggernaut)", "Cura (Mordo)", "Regeneração (Hellverine)"]
   }},
-  { id:"Thunderbolts", name:"Thunderbolts", description:"Os thunderbolts entram em cena - caos, força e rendenção em cada golpe!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/a/a3/Thunderbolts_Vol_2_1.jpg/250px-Thunderbolts_Vol_2_1.jpg", members:["Hiperion","Treinador","Victoria Hand","Fantasma","Soprano"], powerScore: 82, attackers:[{name:"Iluminati e odin", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais Ares", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Fabulosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"UCM", pct:0},{name:"Clube do Inferno", pct:0},]},
-  { id:"Liberdade", name:"Liberdade", description:"Lutamos por Justiça, vencemos pela união.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Captain_America_Shield.svg/250px-Captain_America_Shield.svg.png", members:["Peggy Carter","Patriota","Falcão Joaquin","Capitão America Sam","Maquina de Combate"], powerScore: 75, attackers:[{name:"UCM", pct:0},,{name:"Mente Coletiva Knul", pct:0}]},
-  { id:"Sociedade Aranha", name:"Sociedade Aranha", description:"Conectados pela teia, imparáveis na batalha.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Peter B. Parker","Pavitr","Peni Parker","Aranha Fantasma","Noir"], powerScore: 80, attackers:[{name:"Arma-x23", pct:0},{name:"Gama Apo", pct:0},{name:"Mente coletiva skrul", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Def sec APO", pct:0},{name:"Iluminati", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Aniquiladores e mefisto", pct:0},{name:"imortais Venom/wheave/negativo", pct:0},{name:"Imortais Doom/Dormu", pct:0},{name:"Astral", pct:0},{name:"Thunderbolts", pct:0},{name:"Clube do inferno", pct:0}]},
-  { id:"Iluminati", name:"Iluminati", description:"O poder do conhecimento molda o destino do universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/9/91/New_Avengers_Vol_3_31.jpg/250px-New_Avengers_Vol_3_31.jpg", members:["Hank Pym","Raio Negro","Pantera Shuri","Senhor Fantastico","Capitão Britania"], powerScore: 90, attackers:[{name:"Gama", pct:0},{name:"Iluminati Quasar", pct:0},{name:"Sexteto de guerra/macabro(mysterio)", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Imortais wheave/dormu/quasar", pct:0},{name:"Força V", pct:0}]},
-  { id:"Aniquiladores", name:"Aniquiladores", description:"Onde chegamos nada sobrevive.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos Ultimato","Gorr","Gladiador","Ultimus","Surfista Prateado"], powerScore: 98, attackers:[{name:"Iluminati", pct:0},{name:"Eternos Apo Kestrel Nick", pct:0},{name:"Arma x Ares", pct:0},{name:"Mente coletiva Knul", pct:0},{name:"Def sec Apo/Odin", pct:0},{name:"Iluminati ou com Apo", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Xtremo odin", pct:0},{name:"cabal e kang emma/Apo Quasar", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Imortais Ares/Dormu/Quasar", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"UCM", pct:0},{name:"Clube do inferno Odin", pct:0}]},
-  { id:"Mente Coletiva", name:"Mente Coletiva", description:"Uma só consciência, mil formas de vencer.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Duende Vermelho","Cavaleiro do Vazio","Carnificina","Gwenon","Venom"], powerScore: 85, attackers:[{name:"Submundo", pct:0},{name:"Força A", pct:0},{name:"Arma-x23", pct:0},{name:"Gama", pct:0},{name:"Mente coletiva e Skrul", pct:0},{name:"knowhere", pct:0},{name:"Def sec Quik/wheave", pct:0},{name:"iluminati", pct:0},{name:"Novos Vingadores", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Fora do tempo", pct:0},{name:"Perseguidores noturno", pct:0}]},
-  { id:"Bifrost", name:"Bifrost", description:"Abrindo portais, trazendo a fúria dos Deuses!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Ring17.jpg/250px-Ring17.jpg", members:["Vahl","Loki","Bill Raio","Loki Teen","Sylvie"], attackers:[{name:"Submundo", pct:0},{name:"Eternos e doom dormu/wheave emma 2099", pct:0},{name:"Darkhold Quik", pct:0},{name:"Força A", pct:0},{name:"Arma-x23 quik/doom", pct:0},{name:"Gama", pct:0},{name:"Semente da Morte", pct:0},{name:"Mente coletiva", pct:0},{name:"Def sec e quik/quasar", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Cabal doom kang", pct:0},{name:"Imortais Dormu", pct:0},{name:"Amaldiçoados", pct:0}]},
-  { id:"Tropa Nova", name:"Tropa Alfa", description:"Justiça cósmica na velocidade da luz", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Wolverine","Solaris"], attackers:[{name:"Iluminati", pct:0},{name:"Mercenarios Pagos ", pct:0},{name:"Fora do tempo com e sem cav/quasar", pct:0},{name:"Imortais Quasar", pct:0},{name:"UCM3", pct:0},{name:"Guerreiros Secreto", pct:0}]},
-  { id:"X-tremo", name:"X-tremo", description:"Poder sem limites, ação sem medo.", image:"https://upload.wikimedia.org/wikipedia/pt/a/ac/Gambit.jpg", members:["Gambit","Noturno","Ciclope","Mancha Solar","Forge"], powerScore: 78, attackers:[{name:"Gama", pct:0},{name:"Knowhere", pct:0},{name:"Def sec Apo", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Sociedade aranha", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Imortais Knul", pct:0},{name:"Força V", pct:0},{name:"Perseguidores noturno", pct:0}]},
-  { id:"Orquidea", name:"Orquidea", description:"Beleza letal, florescendo em meio ao caos.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nim-logo.png/330px-Nim-logo.png", members:["Nimrod","Sentinela Omega","Lady letal","Sentienela","Cientista Suprema"], powerScore: 92, attackers:[{name:"Mente coletiva e Skrul", pct:0},{name:"Def sec Apo", pct:0},{name:"Iluminati e com skrul/odin", pct:0},{name:"Cabal Ares Apo", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Fora do tempo Quasar", pct:0},{name:"Imortais venom/mancha/emma/vampira/vahl", pct:0},{name:"Imortais Dormu/Quasar/Odin", pct:0},{name:"Força V e com odin", pct:0},{name:"Astral", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"UCM", pct:0},{name:"Clube do inferno", pct:0}]},
-  { id:"Pegasus", name:"Pegasus", description:"Voamos alto, lutamos com honra celestial.", image:"https://upload.wikimedia.org/wikipedia/wikipedia/pt/thumb/1/19/Iron_Man_3_poster.jpg/250px-Iron_Man_3_poster.jpg", members:["Kestrel","Homem de ferro Guerra Infinita","Resgate","Coração de Ferro","Falcão de Aço"], powerScore: 84, attackers:[{name:"Eternos wheave emma 2099", pct:0},{name:"Força A", pct:0},{name:"Arma-x23", pct:0},{name:"Gama", pct:0},{name:"War dogs", pct:0},{name:"Knowhere", pct:0},{name:"Def sec e wheave", pct:0},{name:"Iluminati", pct:0},{name:"Novos Vingadores", pct:0},{name:"Imortais wheave", pct:0},{name:"Força V", pct:0},{name:"Liberdade", pct:0}]},
-  { id:"X-men Imortais", name:"X-men imortais", description:"Mutantes eternos, a esperança nunca morre!.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/e/ea/All_new_x-men.jpeg/250px-All_new_x-men.jpeg", members:["Jean gray","Tempestade","Fera","Polaris","Cable"], powerScore: 87, attackers:[{name:"Gama", pct:0},{name:"Knowhere", pct:0},{name:"Iluminati", pct:0},{name:"Novos Vingadores odin", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Cabal kang Apo", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Orquidea", pct:0},{name:"Imortais kang/ares/knul", pct:0},{name:"Força V", pct:0},{name:"Astral sem serpente lua", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Força Fênix odin wheave 2099", pct:0},{name:"Piratas Sideral Apo", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"Clube Inferno ou com skrul(rachel)", pct:0},{name:"Insiduosos Vulture Lagarto", pct:0}]},
-  { id:"Astral", name:"Astral", description:"Além do corpo, acima da mente, dominamos o universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Doutor Destino","Serpente da Lua","Emma Frost x","shadowking","Anciã"], attackers:[{name:"Cabal Kang Apo", pct:0},{name:"Mercenarios Pago e Apo/Odin", pct:0},{name:"Imortais Apo/Quasar/Odin/Tempestade Emma Frost", pct:0},{name:"Ares Quasar Apo Odin Emma Frost", pct:0}]},
-  { id:"Perseguidores Noturno", name:"Perseguidores Noturno", description:"Caçamos nas Sombras, vencemos no silêncio.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Homem Coisa","Cavaleiro Lua","Agatha Harkeness"], attackers:[{name:"Arma-x23", pct:0},{name:"Mente Coletiva", pct:0},{name:"Iluminati Odin", pct:0},{name:"Cabal Apo Dormu", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais wheave/vampira/ares/omega/odin/knul/blaastar dormu", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Vigilantes", pct:0},{name:"UCM Mefisto", pct:0},{name:"Clube do inferno Mefisto", pct:0}]},
-  { id:"Sexteto Superior", name:"Sexteto Superior", description:"Seis mentes, um caos sem limites.", image:"https://upload.wikimedia.org/wikipedia/pt/b/bc/Dr._Octopus_Marvel.jpg", members:["Lagarto","Esmaga-Aranha","Kraven","Duende Verde Classico","Doutor Octopus"], powerScore: 78, attackers:[{name:"Iluminati Skrul", pct:0},{name:"X-tremo", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Imortais Vahl", pct:0},{name:"Liberdade", pct:0}]},
-  { id:"Jovens Vingadores", name:"Jovens Vingadores", description:"Coragem Nova, legado eterno.", image:"https://upload.wikimedia.org/wikipedia/pt/b/b1/Garota_Esquilo.jpg", members:["","Garota Esquilo","America Chavez","Eco","Ms. Marvel"], attackers:[{name:"Iluminati", pct:0},{name:"Imortais Knul", pct:0}]},
-  { id:"Invasores", name:"Invasores", description:"Atacamos primeiro, vencemos sempre.", image:"https://upload.wikimedia.org/wikipedia/pt/d/d2/Us_agent.jpg", members:["Nicky Fury","Capitão America 2GM","Union Jack","Bucky Barnes","Punfo de Ferro 2GM"], attackers:[{name:"Ordem Negra", pct:0},{name:"Novos Vingadores", pct:0}]},
-  { id:"Defensores Secreto", name:"Defensores Secreto", description:"Protegemos nas sombras, Vencemos na luz.", image:"https://protocolosx3.wordpress.com/wp-content/uploads/2025/03/defensoressecretos-drestranho-falcaonoturno-juliacarpenter-nomade.jpg", members:["Motoqueiro Fantasma Robbie","Gata Negra","Foton","Doutor Estranho","Ms. Marvel Luz Dura"], attackers:[{name:"Mente Coletiva Knul", pct:0}]},
-  { id:"Novos Vingadores", name:"Novos Vingadores", description:"Novos heróis, mesma determinação de salvar o mundo.", image:"https://seriesemcena.com.br/wp-content/uploads/2019/01/Dw_9XoLVYAEvC23.jpg", members:["Agente Coulson","Tigresa","Ronin","O Coisa","Harpia"], attackers:[{name:"Cabal Apo Ultimus", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais Vahl/Apo", pct:0}]},
-  { id:"Gama", name:"Gama", description:"Pura fúria irradiada, impossível de deter.", image:"https://upload.wikimedia.org/wikipedia/pt/a/aa/Hulk_%28circa_2019%29.png", members:["Hulk","Hulk Vermelho","Abominavel","She-Hulk","Brawn"], attackers:[{name:"Knowhere", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0}]},
-  { id:"Infestação", name:"Infestação", description:"Quanto mais tentam nos deter, mais nos multiplicamos.", image:"https://preview.redd.it/37ighsq9jr031.jpg?auto=webp&s=5b336efab8ddb4a717cf1cf0479e143720c50252", members:["Big Time","Enxame","Viuva Negra","Homem Formiga","Jaqueta Amarela"], attackers:[{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Imortais Wheave/Ares", pct:0},{name:"Perseguidores Noturno Ares", pct:0},{name:"UCM", pct:0}]},
-  { id:"Herois de Aluguel", name:"Herois de aluguel", description:"Lutamos por contrato,vencemos por honra.", image:"https://upload.wikimedia.org/wikipedia/pt/3/39/Luke_Cage_%28Terra-616%29.jpg", members:["Luke Cage","Shang-Shi","Misty knight","Coleen wing","Punfo de Ferro"], attackers:[{name:"Gama", pct:0},{name:"Iluminati", pct:0}]},
-  { id:"Arma-x23", name:"Arma-x23", description:"Criados para matar, lutando para sobreviver!.", image:"https://upload.wikimedia.org/wikipedia/pt/5/5d/Wolverine_%28James_%27Logan%27_Howlett%29.png", members:["Lady Letal","Omega Vermelho","Dentes de sabre","x-23","Samurai de prata"], powerScore: 70, attackers:[{name:"Força A", pct:0},{name:"Gama", pct:0}]},
-  { id:"Poderosos Vingadores", name:"Poderosos Vingadores", description:"Força em cada golpe, glória em cada vitória.", image:"https://www.boletimnerd.com.br/wp-content/uploads/2025/05/os-novos-vingadores-conheca-a-equipe-de-herois.jpg", members:["Falcão","Hercules","Vision","Feiticeira escarlate","Mulher Invisivel"], attackers:[{name:"Arma-x23", pct:0},{name:"Força V", pct:0},{name:"Fabulosos Vingadores", pct:0},{name:"Perseguidores Noturno", pct:0}]},
-  { id:"Submundo", name:"Submundo", description:"Nas sombras da cidade, nós fazemos as regras.", image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzjKanLoo8KLnoSewf917P369wvNrQ6l7IK2dolNMCS-xAou_UN59BGsgmy3-Bi-izEdF6I_dHznsSBR8kCuvX05AUTodVn6O4L_4x4J7tS6yNFowMobLJOEk8aD8SPKKC4pNjvtgwwJTQ/s1600/Marvel+diversity.jpg", members:["Kingpin","Nobu","Senhor Negativo","Duende Verde","Treinador"], attackers:[{name:"Knowhere", pct:0}]},
-  { id:"Ordem Negra", name:"Ordem Negra", description:"Servimos Thanos, trazemos o fim.", image:"https://upload.wikimedia.org/wikipedia/commons/9/94/Ster_en_Grootkruisvan_de_Orde_van_de_Zwarte_Ster.jpg", members:["Thanos","Midnight","Corvus Glaive","Ebony Maw","Cull Obsidian"], attackers:[{name:"Knowhere", pct:0},{name:"Def Sec Apo", pct:0},{name:"Novos Vingadores", pct:0}]},
-  { id:"Cabala Dormu Kang", name:"Cabal Dormu Kang", description:"O tempo e o caos curvam-se diante do nosso poder.", image:"https://upload.wikimedia.org/wikipedia/pt/7/78/Kang-Young_Avengers.jpg", members:["Namor","Patriota de Ferro","Lider","Dormammu","Kang"], attackers:[{name:"Sexteto de Guerra", pct:0},{name:"Iluminati", pct:0},{name:"Força V", pct:0}]},
-  { id:"Piratas Sideral", name:"Piratas Sideral", description:"Saqueando estrelas, conquistando galáxias.", image:"https://static.wikia.nocookie.net/xmen-comics/images/a/a4/Hellions_Vol_1_4_Textless.jpg/revision/latest/smart/width/250/height/250?cb=20200619011935&path-prefix=pt-br", members:["Lilandra","Rocket Raccon","Groot","Havok","Howard o Pato"], attackers:[{name:"Mente Coletiva Mefisto/Knul", pct:0},{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Cabala Apo Skrul", pct:0},{name:"Orquidea", pct:0},{name:"Imortais Dormu/Quasar", pct:0},{name:"Força V ou com Odin", pct:0},{name:"Astral Quasar(SK)", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"Amaldiçoados Quasar", pct:0},{name:"UCM", pct:0},{name:"Clube do Inferno", pct:0},{name:"Guerreiros Secreto", pct:0},{name:"Insiduosos Schoker Ares", pct:0}]},
-  { id:"Fora do Tempo", name:"Fora do Tempo", description:"Ninguem escapa do que já foi e do que ainda será.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/GPB_circling_earth.jpg/250px-GPB_circling_earth.jpg", members:["Cavaleiro Negro","Motoqueiro Fantama Cosmico","Capitão America","Estigma","Capitã Carter"], attackers:[{name:"Mercenarios Pago", pct:0},{name:"Thanos e Gladiador", pct:0},{name:"Imortais Quasar", pct:0},{name:"Força V3", pct:0}]},
-  { id:"Força V", name:"Força V", description:"Cinco heróis, uma força imparável!.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Vespa","Coração de Ferro"], attackers:[{name:"Cabala Odin Mefisto", pct:0}]},
-  { id:"Knowhere", name:"Knowhere", description:"No vazio do cosmos, somos tudo e nada.", image:"https://upload.wikimedia.org/wikipedia/pt/0/0e/Rocket_Raccoon.jpg", members:["Nova","Korg","Cosmo","Thor","Star lord Aniquilação"], attackers:[{name:"Imortais Vespa", pct:0},{name:"Força V", pct:0}]},
-  { id:"UCM Prof X", name:"UCM Prof X", description:"Mente, poder e ciêcia unidos pelo destino do universo.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Senhor Fantastico UCM","Mulher Invisivel UCM","Tocha Humana","Professor X"], attackers:[{name:"UCM Prof X", pct:0}]},
-  { id:"UCM Prof X Odin", name:"UCM Prof X Odin", description:"Quando mente, ciência e divindade se unem, o impossivel se curva.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Senhor Fantastico UCM","Mulher Invisivel UCM","Professor X","Odin"], attackers:[{name:"Prof X Quasar Odin Apo Ares", pct:0}]},
-  { id:"UCM Prof X Knul", name:"UCM Prof X Knul", description:"Luz, mente e trevas em um só propósito: dominar o cosmos.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Senhor Fantastico UCM","Mulher Invisivel UCM","Professor X","Knul"], attackers:[{name:"UCM Prof X Emma", pct:0}]},
-  { id:"Sociedade Aranha Wheave", name:"Sociedade Aranha Wheave", description:"Unidos pela teia, imparáveis na batalha.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Spider Wheave","Noir","Pavitr","","Peni Parker"], attackers:[{name:"Mente Coletiva Skrul/Knul", pct:0},{name:"Mercenarios Pago ou com Apo", pct:0},{name:"Imortais Dormu/Quasar", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0}]},
-  { id:"Aniquiladores Ares", name:"Aniquiladores Ares", description:"Força divina e destruição implacável em um só golpe.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Ares","Gorr","Ultimus"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Cabala Skrul Emma", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Imortais Ares", pct:0},{name:"Astral Mefisto", pct:0}]},
-  { id:"Mente Coletiva Knul", name:"Mente Coletiva Knul", description:"Uma Consciência sombria, espalhando caos pelo universo.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Knul","Cavaleiro do Vazio","Duende vermelho","Gwenon","Carnage"], attackers:[{name:"Iluminati", pct:0},{name:"Imortais Dormu/Apo/Knul/Odin", pct:0},{name:"Força V3 Skrul", pct:0},{name:"UCM", pct:0}]},
-  { id:"Mente Coletiva Knul Gorr", name:"Mente Coletiva Knul Gorr", description:"A escuridão pensa, os Deuses caem, o universo silencia.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Cavaleiro do vazio","Duende Vermelho","Gwenon","Knul","Gorr"], attackers:[{name:"Iluminati Skrul/Odin", pct:0},{name:"Imortais Odin/Quasar", pct:0},{name:"Mente Coletiva Quasar", pct:0}]},
-  { id:"Astral Knul Cav Negro", name:"Astral Knul Cav Negro", description:"Das sombras do cosmos nasce o poder absoluto.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Anciã","Shadowking","Emma Frost X","Knul","Cavalheiro Negro"], attackers:[{name:"UCM Quasar", pct:0}]},
-  { id:"UCM Odin", name:"UCM Odin", description:"Ciência, poder e divindade unidos para proteger os nove reinos.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Mulher Invisivel UCM","Senhor Fantastico UCM","Tocha Humana","Odin"], attackers:[{name:"UCM Quasar Emma", pct:0}]},
-  { id:"Tropa Alfa Ares", name:"Tropa Nova Ares", description:"A fúria dos Deuses com o poder das estrelas.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Solaris","Ares"], attackers:[{name:"Mercenarios Pagos", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Thunderbolts", pct:0},{name:"Perseguidores Noturno", pct:0}]},
-  { id:"Tropa Alfa Skrul", name:"Tropa Nova Skrul", description:"Quando a Força estelar encontra a astúcia das sombras.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Solaris","Skrul"], attackers:[{name:"Mercenarios Pago", pct:0},{name:"Imortais Ares/Doom/Mefisto/Knul/Quasar", pct:0}]},
-  { id:"X-tremo Vampira", name:"X-tremo Vampira", description:"Poder roubado, força sem limites.", image:"https://upload.wikimedia.org/wikipedia/pt/a/ac/Gambit.jpg", members:["Noturno","Gambit","Forge","Mancha Solar","Vampira"], attackers:[{name:"Gama", pct:0},{name:"Def Sec Apo ou Def Sec Omega Knul", pct:0},{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Cabala Kang Apo", pct:0},{name:"Força V", pct:0},{name:"Liberdade", pct:0},{name:"UCM", pct:0}]},
-  { id:"Sociedade Aranha Quasar", name:"Sociedade Aranha Quasar", description:"Teias e energia cósmica unidas contra qualquer ameaça.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Quasar","Noir","Pavitr","","Peni Parker"], attackers:[{name:"Mercenarios Pagos", pct:0}]},
-  { id:"Aniquiladores Odin", name:"Aniquiladores Odin", description:"Força imortal e fúria divina em cada golpe.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Odin","Gorr","Ultimus"], attackers:[{name:"Astral Mefisto", pct:0},{name:"Odin Quasar Blaastar Omega Prof X", pct:0}]},
-  { id:"Aniquiladores Odin Mot Cos", name:"Aniquiladores Odin Mot Cos", description:"Divindade, destruição e velocidade imparável pelo universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Odin","Gorr","Motoqueiro Cosmico"], attackers:[{name:"Força V Mefisto", pct:0},{name:"Prof X Ares Noturno Cable Polaris", pct:0}]},
-  { id:"Orquidea Dormu", name:"Orquidea Dormu", description:"Beleza letal e poder das trevas em perfeita harmonia.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nim-logo.png/330px-Nim-logo.png", members:["Nimrod","Lady Letal","Sentinela","Sentinela Omega","Dormu"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Fora do Tempo Area", pct:0},{name:"Imortais Wheave/Ares", pct:0},{name:"Perseguidores Noturno ou com Apo", pct:0}]},
-  { id:"Orquidea Mefisto", name:"Orquidea Mefisto", description:"Charme mortal, maldade eterna.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nim-logo.png/330px-Nim-logo.png", members:["Nimrod","Lady Letal","Sentinela","Sentinela Omega","Mefisto"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Cabala Apo Knul", pct:0},{name:"Mercenarios Pago Odin", pct:0},{name:"Aniquiladores Odin/Skrul Knul/Mefisto Knul", pct:0},{name:"Astral Quasar", pct:0},{name:"Perseguidores Noturno Knul", pct:0}]},
-  { id:"Astral Mefisto", name:"Astral Mefisto", description:"Poder cósmico e maldade infernal unidos.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Anciã","Shadowking","Emma Frost X","Mefisto","Doutor Destino"], attackers:[{name:"Cabala Apo Knul", pct:0},{name:"Mercenarios Pago Quasar", pct:0},{name:"Imortais Quasar/Knul", pct:0},{name:"Astral Knul", pct:0}]},
-  { id:"Astral Odin", name:"Astral Odin", description:"Sabedoria celestial e poder cósmico guiando os Deuses e as estrelas.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Anciã","Shadowking","Emma Frost X","Mefisto","Doutor Destino"], attackers:[{name:"Força Fenix Mefisto Tempestade Noturno", pct:0}]},
-  { id:"Perseguidores Noturno Odin", name:"Perseguidores Noturno Odin", description:"Caçadores das sombras abençoados pelo poder dos Deuses.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Odin","Homem Coisa","Agatha Harkness"], attackers:[{name:"Imortais e Knul", pct:0},{name:"Força V Odin", pct:0}]},
-  { id:"Piratas Sideral Odin", name:"Piratas Sideral Odin", description:"Saqueando estrelas com a fúria dos Deuses.", image:"https://static.wikia.nocookie.net/xmen-comics/images/a/a4/Hellions_Vol_1_4_Textless.jpg/revision/latest/smart/width/250/height/250?cb=20200619011935&path-prefix=pt-br", members:["Hoaward o pato","lilandra","havok","Groot","Odin"], attackers:[{name:"Força V", pct:0}]},
-  { id:"Perseguidores Noturno Mefisto", name:"Perseguidores Noturno Mefisto", description:"Das trevas viemos, com o inferno ao nosso lado.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Mefisto","Homem Coisa","Agatha Harkness"], attackers:[{name:"Cabala Apo Knul", pct:0},{name:"Mercenarios Pago Knul", pct:0},{name:"Mente Coletiva Knul", pct:0},{name:"Aniquiladores Knul/Knul Skrul", pct:0},{name:"Imortais Quasar", pct:0},{name:"Força fenix Odin Quasar Knul", pct:0},{name:"UCM OU UCM Odin", pct:0},{name:"Odin Quasar Ares Wheave 2099", pct:0}]},
-  { id:"Infestação Escorpião", name:"Infestação Escorpião", description:"Veneno letal, e caos multiplicado em cada ataque.", image:"https://preview.redd.it/37ighsq9jr031.jpg?auto=webp&s=5b336efab8ddb4a717cf1cf0479e143720c50252", members:["Big Time","Escorpião","Viuva Negra","Homem Formiga","Jaqueta Amarela"], attackers:[{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais Quasar/Blaastar Dormu", pct:0},{name:"Força V", pct:0},{name:"Insiduosos Shocker Lagarto/Shocker Duende Classico", pct:0}]},
-  { id:"Força Fênix Mutantes", name:"Força Fênix Mutantes", description:"Renascendo das cinzas, poder ilimitado em nossas maõs.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Nuremberg_chronicles_-_Phoenix_%28CIIIIv%29.jpg/250px-Nuremberg_chronicles_-_Phoenix_%28CIIIIv%29.jpg", members:["Fê","Assasímio","Demolidor Moderno","Justiceiro","Elektra"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Novos Vingadores", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Sociedade Aranha Skrul", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais Treinador Gorr", pct:0},{name:"Iluminati", pct:0},{name:"Orquidea", pct:0},{name:"Força V", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"UCM", pct:0}]},
-  { id:"Força V Odin Mot Cos", name:"Força V Odin Mot Cos", description:"Justiça divina guiada pelo fogo das estrelas.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Odin","Motoqueiro Cosmico"], attackers:[{name:"Força V Mefisto Emma", pct:0}]},
-  { id:"Força V Odin Mefisto", name:"Força V Odin Mefisto", description:"Entre o divino e o inferno, o poder absoluto desperta.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Odin","Mefisto"], attackers:[{name:"Força V Odin Prof X", pct:0}]},
-  { id:"Força V Odin Skrul", name:"Força V Odin Skrul", description:"Deuses e metamorfos unidos pela conquista cósmica.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Odin","Skrul"], attackers:[{name:"UCM Knul Gorr", pct:0},{name:"UCM", pct:0}]},
-  { id:"Sociedade Aranha Mefisto", name:"Sociedade Aranha Mefisto", description:"Teias do inferno tecidas com almas e destruição.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Mefisto","Noir","Pavitr","","Peni Parker"], attackers:[{name:"Mente Coletiva Knul", pct:0}]},
-  { id:"Iluminati Mefisto", name:"Iluminati Mefisto", description:"Conhecimento proibido e poder infernal moldando o destino.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/9/91/New_Avengers_Vol_3_31.jpg/250px-New_Avengers_Vol_3_31.jpg", members:["Hank Pym","Raio Negro","Pantera Shuri","Senhor Fantastico","Capitão Britania"], attackers:[{name:"Astral Knul sem Sk", pct:0}]},
-  { id:"Aniquiladores Mefisto", name:"Aniquiladores Mefisto", description:"A destruição ganhou uma alma... e ela veio do inferno.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Mefisto","Gorr","Ultimus"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Fora do Tempo Knul", pct:0},{name:"UCM", pct:0}]},
-  { id:"Sexteto de Guerra", name:"Sexteto de Guerra", description:"Cinco Forças, um só propósito: conquistar pelo caos.", image:"https://upload.wikimedia.org/wikipedia/pt/b/bc/Dr._Octopus_Marvel.jpg", members:["Doctor Octopus","Vulture","Mysterio","Duende Classico","Kraven"], attackers:[{name:"Imortais Odin", pct:0},{name:"Insiduosos Gladiador Big Time", pct:0}]},
-  { id:"Mente Coletiva Skrul", name:"Mente Coletiva Skrul", description:"Uma consciêcia, mil rostos, um império invisivel.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Skrul","Cavaleiro do Vazio","Carnage","Duende Vermelho","Gwenon"], attackers:[{name:"Mercenarios Pagos", pct:0},{name:"Imortais Dormu", pct:0},{name:"Força V Skrul", pct:0}]},
-  { id:"Bifrost Dormu", name:"Bifrost Dormu", description:"A ponte entre reinos agora leva direto ao inferno.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Ring17.jpg/250px-Ring17.jpg", members:["Vahl","Dormammu","Bill Raio","Loki Teen","Sylvie"], attackers:[{name:"Gama", pct:0},{name:"Knowhere", pct:0},{name:"Def Sec Eternos", pct:0},{name:"Imortais Vahl", pct:0}]},
+  { id:"Thunderbolts", name:"Thunderbolts", tags:["Habilidade", "Dano", "Controle"], description:"Os thunderbolts entram em cena - caos, força e rendenção em cada golpe!", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/a/a3/Thunderbolts_Vol_2_1.jpg/250px-Thunderbolts_Vol_2_1.jpg", members:["Hiperion","Treinador","Victoria Hand","Fantasma","Soprano"], powerScore: 82, attackers:[{name:"Iluminati e odin", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Imortais Ares", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Fabulosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"UCM", pct:0},{name:"Clube do Inferno", pct:0},]},
+  { id:"Liberdade", name:"Liberdade", tags:["Habilidade", "Tech"], description:"Lutamos por Justiça, vencemos pela união.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Captain_America_Shield.svg/250px-Captain_America_Shield.svg.png", members:["Peggy Carter","Patriota","Falcão Joaquin","Capitão America Sam","Maquina de Combate"], powerScore: 75, attackers:[{name:"UCM", pct:0},,{name:"Mente Coletiva Knul", pct:0}]},
+  { id:"Sociedade Aranha", name:"Sociedade Aranha", tags:["Bio", "Esquiva"], description:"Conectados pela teia, imparáveis na batalha.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Peter B. Parker","Pavitr","Peni Parker","Aranha Fantasma","Noir"], powerScore: 80, attackers:[{name:"Arma-x23", pct:0},{name:"Gama Apo", pct:0},{name:"Mente coletiva skrul", pct:0},{name:"Mente coletiva e Knul", pct:0},{name:"Def sec APO", pct:0},{name:"Iluminati", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Aniquiladores e mefisto", pct:0},{name:"imortais Venom/wheave/negativo", pct:0},{name:"Imortais Doom/Dormu", pct:0},{name:"Astral", pct:0},{name:"Thunderbolts", pct:0},{name:"Clube do inferno", pct:0}]},
+  { id:"Iluminati", name:"Iluminati", tags:["Tech", "Controle", "Sinergia"], description:"O poder do conhecimento molda o destino do universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/9/91/New_Avengers_Vol_3_31.jpg/250px-New_Avengers_Vol_3_31.jpg", members:["Hank Pym","Raio Negro","Pantera Shuri","Senhor Fantastico","Capitão Britania"], powerScore: 90, attackers:[{name:"Gama", pct:0},{name:"Iluminati Quasar", pct:0},{name:"Sexteto de guerra/macabro(mysterio)", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Imortais wheave/dormu/quasar", pct:0},{name:"Força V", pct:0}]},
+  { id:"Aniquiladores", name:"Aniquiladores", tags:["Cósmico", "Dano"], description:"Onde chegamos nada sobrevive.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos Ultimato","Gorr","Gladiador","Ultimus","Surfista Prateado"], powerScore: 98, attackers:[{name:"Iluminati", pct:0},{name:"Eternos Apo Kestrel Nick", pct:0},{name:"Arma x Ares", pct:0},{name:"Mente coletiva Knul", pct:0},{name:"Def sec Apo/Odin", pct:0},{name:"Iluminati ou com Apo", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Xtremo odin", pct:0},{name:"cabal e kang emma/Apo Quasar", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Fora do tempo", pct:0},{name:"Imortais Ares/Dormu/Quasar", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"UCM", pct:0},{name:"Clube do inferno Odin", pct:0}]},
+  { id:"Mente Coletiva", name:"Mente Coletiva", tags:["Bio", "Sustentação", "Sinergia"], description:"Uma só consciência, mil formas de vencer.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Duende Vermelho","Cavaleiro do Vazio","Carnificina","Gwenon","Venom"], powerScore: 85, attackers:[{name:"Submundo", pct:0},{name:"Força A", pct:0},{name:"Arma-x23", pct:0},{name:"Gama", pct:0},{name:"Mente coletiva e Skrul", pct:0},{name:"knowhere", pct:0},{name:"Def sec Quik/wheave", pct:0},{name:"iluminati", pct:0},{name:"Novos Vingadores", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Fora do tempo", pct:0},{name:"Perseguidores noturno", pct:0}]},
+  { id:"Bifrost", name:"Bifrost", tags:["Místico", "Cósmico"], description:"Abrindo portais, trazendo a fúria dos Deuses!", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Ring17.jpg/250px-Ring17.jpg", members:["Vahl","Loki","Bill Raio","Loki Teen","Sylvie"], attackers:[{name:"Submundo", pct:0},{name:"Eternos e doom dormu/wheave emma 2099", pct:0},{name:"Darkhold Quik", pct:0},{name:"Força A", pct:0},{name:"Arma-x23 quik/doom", pct:0},{name:"Gama", pct:0},{name:"Semente da Morte", pct:0},{name:"Mente coletiva", pct:0},{name:"Def sec e quik/quasar", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Cabal doom kang", pct:0},{name:"Imortais Dormu", pct:0},{name:"Amaldiçoados", pct:0}]},
+  { id:"Tropa Nova", name:"Tropa Alfa", tags:["Mutante", "Sinergia"], description:"Justiça cósmica na velocidade da luz", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Wolverine","Solaris"], attackers:[{name:"Iluminati", pct:0},{name:"Mercenarios Pagos ", pct:0},{name:"Fora do tempo com e sem cav/quasar", pct:0},{name:"Imortais Quasar", pct:0},{name:"UCM3", pct:0},{name:"Guerreiros Secreto", pct:0}]},
+  { id:"X-tremo", name:"X-tremo", tags:["Mutante", "Dano"], description:"Poder sem limites, ação sem medo.", image:"https://upload.wikimedia.org/wikipedia/pt/a/ac/Gambit.jpg", members:["Gambit","Noturno","Ciclope","Mancha Solar","Forge"], powerScore: 78, attackers:[{name:"Gama", pct:0},{name:"Knowhere", pct:0},{name:"Def sec Apo", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Sociedade aranha", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Imortais Knul", pct:0},{name:"Força V", pct:0},{name:"Perseguidores noturno", pct:0}]},
+  { id:"Orquidea", name:"Orquidea", tags:["Tech", "Anti-Mutante"], description:"Beleza letal, florescendo em meio ao caos.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nim-logo.png/330px-Nim-logo.png", members:["Nimrod","Sentinela Omega","Lady letal","Sentienela","Cientista Suprema"], powerScore: 92, attackers:[{name:"Mente coletiva e Skrul", pct:0},{name:"Def sec Apo", pct:0},{name:"Iluminati e com skrul/odin", pct:0},{name:"Cabal Ares Apo", pct:0},{name:"Mercenarios pagos", pct:0},{name:"Fora do tempo Quasar", pct:0},{name:"Imortais venom/mancha/emma/vampira/vahl", pct:0},{name:"Imortais Dormu/Quasar/Odin", pct:0},{name:"Força V e com odin", pct:0},{name:"Astral", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"UCM", pct:0},{name:"Clube do inferno", pct:0}]},
+  { id:"Pegasus", name:"Pegasus", tags:["Tech", "Sinergia"], description:"Voamos alto, lutamos com honra celestial.", image:"https://upload.wikimedia.org/wikipedia/wikipedia/pt/thumb/1/19/Iron_Man_3_poster.jpg/250px-Iron_Man_3_poster.jpg", members:["Kestrel","Homem de ferro Guerra Infinita","Resgate","Coração de Ferro","Falcão de Aço"], powerScore: 84, attackers:[{name:"Eternos wheave emma 2099", pct:0},{name:"Força A", pct:0},{name:"Arma-x23", pct:0},{name:"Gama", pct:0},{name:"War dogs", pct:0},{name:"Knowhere", pct:0},{name:"Def sec e wheave", pct:0},{name:"Iluminati", pct:0},{name:"Novos Vingadores", pct:0},{name:"Imortais wheave", pct:0},{name:"Força V", pct:0},{name:"Liberdade", pct:0}]},
+  { id:"X-men Imortais", name:"X-men imortais", tags:["Mutante", "Sustentação"], description:"Mutantes eternos, a esperança nunca morre!.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/e/ea/All_new_x-men.jpeg/250px-All_new_x-men.jpeg", members:["Jean gray","Tempestade","Fera","Polaris","Cable"], powerScore: 87, attackers:[{name:"Gama", pct:0},{name:"Knowhere", pct:0},{name:"Iluminati", pct:0},{name:"Novos Vingadores odin", pct:0},{name:"Sexteto de guerra", pct:0},{name:"Cabal kang Apo", pct:0},{name:"Mercenarios Pagos", pct:0},{name:"Orquidea", pct:0},{name:"Imortais kang/ares/knul", pct:0},{name:"Força V", pct:0},{name:"Astral sem serpente lua", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Força Fênix odin wheave 2099", pct:0},{name:"Piratas Sideral Apo", pct:0},{name:"Perseguidores noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"Clube Inferno ou com skrul(rachel)", pct:0},{name:"Insiduosos Vulture Lagarto", pct:0}]},
+  { id:"Astral", name:"Astral", tags:["Místico", "Controle"], description:"Além do corpo, acima da mente, dominamos o universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Doutor Destino","Serpente da Lua","Emma Frost x","shadowking","Anciã"], attackers:[{name:"Cabal Kang Apo", pct:0},{name:"Mercenarios Pago e Apo/Odin", pct:0},{name:"Imortais Apo/Quasar/Odin/Tempestade Emma Frost", pct:0},{name:"Ares Quasar Apo Odin Emma Frost", pct:0}]},
+  { id:"Perseguidores Noturno", name:"Perseguidores Noturno", tags:["Místico", "Sustentação"], description:"Caçamos nas Sombras, vencemos no silêncio.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Homem Coisa","Cavaleiro Lua","Agatha Harkeness"], attackers:[{name:"Arma-x23", pct:0},{name:"Mente Coletiva", pct:0},{name:"Iluminati Odin", pct:0},{name:"Cabal Apo Dormu", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais wheave/vampira/ares/omega/odin/knul/blaastar dormu", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Vigilantes", pct:0},{name:"UCM Mefisto", pct:0},{name:"Clube do inferno Mefisto", pct:0}]},
+  { id:"Sexteto Superior", name:"Sexteto Superior", tags:["Bio", "Tech", "Dano"], description:"Seis mentes, um caos sem limites.", image:"https://upload.wikimedia.org/wikipedia/pt/b/bc/Dr._Octopus_Marvel.jpg", members:["Lagarto","Esmaga-Aranha","Kraven","Duende Verde Classico","Doutor Octopus"], powerScore: 78, attackers:[{name:"Iluminati Skrul", pct:0},{name:"X-tremo", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Imortais Vahl", pct:0},{name:"Liberdade", pct:0}]},
+  { id:"Jovens Vingadores", name:"Jovens Vingadores", tags:["Bio", "Habilidade"], description:"Coragem Nova, legado eterno.", image:"https://upload.wikimedia.org/wikipedia/pt/b/b1/Garota_Esquilo.jpg", members:["","Garota Esquilo","America Chavez","Eco","Ms. Marvel"], attackers:[{name:"Iluminati", pct:0},{name:"Imortais Knul", pct:0}]},
+  { id:"Invasores", name:"Invasores", tags:["Habilidade", "Sinergia"], description:"Atacamos primeiro, vencemos sempre.", image:"https://upload.wikimedia.org/wikipedia/pt/d/d2/Us_agent.jpg", members:["Nicky Fury","Capitão America 2GM","Union Jack","Bucky Barnes","Punfo de Ferro 2GM"], attackers:[{name:"Ordem Negra", pct:0},{name:"Novos Vingadores", pct:0}]},
+  { id:"Defensores Secreto", name:"Defensores Secreto", tags:["Místico", "Dano"], description:"Protegemos nas sombras, Vencemos na luz.", image:"https://protocolosx3.wordpress.com/wp-content/uploads/2025/03/defensoressecretos-drestranho-falcaonoturno-juliacarpenter-nomade.jpg", members:["Motoqueiro Fantasma Robbie","Gata Negra","Foton","Doutor Estranho","Ms. Marvel Luz Dura"], attackers:[{name:"Mente Coletiva Knul", pct:0}]},
+  { id:"Novos Vingadores", name:"Novos Vingadores", tags:["Habilidade", "Sinergia"], description:"Novos heróis, mesma determinação de salvar o mundo.", image:"https://seriesemcena.com.br/wp-content/uploads/2019/01/Dw_9XoLVYAEvC23.jpg", members:["Agente Coulson","Tigresa","Ronin","O Coisa","Harpia"], attackers:[{name:"Cabal Apo Ultimus", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais Vahl/Apo", pct:0}]},
+  { id:"Gama", name:"Gama", tags:["Bio", "Dano"], description:"Pura fúria irradiada, impossível de deter.", image:"https://upload.wikimedia.org/wikipedia/pt/a/aa/Hulk_%28circa_2019%29.png", members:["Hulk","Hulk Vermelho","Abominavel","She-Hulk","Brawn"], attackers:[{name:"Knowhere", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0}]},
+  { id:"Infestação", name:"Infestação", tags:["Bio", "Debuff"], description:"Quanto mais tentam nos deter, mais nos multiplicamos.", image:"https://preview.redd.it/37ighsq9jr031.jpg?auto=webp&s=5b336efab8ddb4a717cf1cf0479e143720c50252", members:["Big Time","Enxame","Viuva Negra","Homem Formiga","Jaqueta Amarela"], attackers:[{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Imortais Wheave/Ares", pct:0},{name:"Perseguidores Noturno Ares", pct:0},{name:"UCM", pct:0}]},
+  { id:"Herois de Aluguel", name:"Herois de aluguel", tags:["Habilidade", "Defesa"], description:"Lutamos por contrato,vencemos por honra.", image:"https://upload.wikimedia.org/wikipedia/pt/3/39/Luke_Cage_%28Terra-616%29.jpg", members:["Luke Cage","Shang-Shi","Misty knight","Coleen wing","Punfo de Ferro"], attackers:[{name:"Gama", pct:0},{name:"Iluminati", pct:0}]},
+  { id:"Arma-x23", name:"Arma-x23", tags:["Habilidade", "Dano"], description:"Criados para matar, lutando para sobreviver!.", image:"https://upload.wikimedia.org/wikipedia/pt/5/5d/Wolverine_%28James_%27Logan%27_Howlett%29.png", members:["Lady Letal","Omega Vermelho","Dentes de sabre","x-23","Samurai de prata"], powerScore: 70, attackers:[{name:"Força A", pct:0},{name:"Gama", pct:0}]},
+  { id:"Poderosos Vingadores", name:"Poderosos Vingadores", tags:["Sinergia"], description:"Força em cada golpe, glória em cada vitória.", image:"https://www.boletimnerd.com.br/wp-content/uploads/2025/05/os-novos-vingadores-conheca-a-equipe-de-herois.jpg", members:["Falcão","Hercules","Vision","Feiticeira escarlate","Mulher Invisivel"], attackers:[{name:"Arma-x23", pct:0},{name:"Força V", pct:0},{name:"Fabulosos Vingadores", pct:0},{name:"Perseguidores Noturno", pct:0}]},
+  { id:"Submundo", name:"Submundo", tags:["Habilidade", "Controle"], description:"Nas sombras da cidade, nós fazemos as regras.", image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzjKanLoo8KLnoSewf917P369wvNrQ6l7IK2dolNMCS-xAou_UN59BGsgmy3-Bi-izEdF6I_dHznsSBR8kCuvX05AUTodVn6O4L_4x4J7tS6yNFowMobLJOEk8aD8SPKKC4pNjvtgwwJTQ/s1600/Marvel+diversity.jpg", members:["Kingpin","Nobu","Senhor Negativo","Duende Verde","Treinador"], attackers:[{name:"Knowhere", pct:0}]},
+  { id:"Ordem Negra", name:"Ordem Negra", tags:["Cósmico", "Dano", "Sinergia"], description:"Servimos Thanos, trazemos o fim.", image:"https://upload.wikimedia.org/wikipedia/commons/9/94/Ster_en_Grootkruisvan_de_Orde_van_de_Zwarte_Ster.jpg", members:["Thanos","Midnight","Corvus Glaive","Ebony Maw","Cull Obsidian"], attackers:[{name:"Knowhere", pct:0},{name:"Def Sec Apo", pct:0},{name:"Novos Vingadores", pct:0}]},
+  { id:"Cabala Dormu Kang", name:"Cabal Dormu Kang", tags:["Místico", "Controle"], description:"O tempo e o caos curvam-se diante do nosso poder.", image:"https://upload.wikimedia.org/wikipedia/pt/7/78/Kang-Young_Avengers.jpg", members:["Namor","Patriota de Ferro","Lider","Dormammu","Kang"], attackers:[{name:"Sexteto de Guerra", pct:0},{name:"Iluminati", pct:0},{name:"Força V", pct:0}]},
+  { id:"Piratas Sideral", name:"Piratas Sideral", tags:["Cósmico", "Dano"], description:"Saqueando estrelas, conquistando galáxias.", image:"https://static.wikia.nocookie.net/xmen-comics/images/a/a4/Hellions_Vol_1_4_Textless.jpg/revision/latest/smart/width/250/height/250?cb=20200619011935&path-prefix=pt-br", members:["Lilandra","Rocket Raccon","Groot","Havok","Howard o Pato"], attackers:[{name:"Mente Coletiva Mefisto/Knul", pct:0},{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Cabala Apo Skrul", pct:0},{name:"Orquidea", pct:0},{name:"Imortais Dormu/Quasar", pct:0},{name:"Força V ou com Odin", pct:0},{name:"Astral Quasar(SK)", pct:0},{name:"Poderosos Vingadores", pct:0},{name:"Liberdade", pct:0},{name:"Vigilantes", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"Thunderbolts", pct:0},{name:"Amaldiçoados Quasar", pct:0},{name:"UCM", pct:0},{name:"Clube do Inferno", pct:0},{name:"Guerreiros Secreto", pct:0},{name:"Insiduosos Schoker Ares", pct:0}]},
+  { id:"Fora do Tempo", name:"Fora do Tempo", tags:["Cósmico", "Místico", "Habilidade"], description:"Ninguem escapa do que já foi e do que ainda será.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/GPB_circling_earth.jpg/250px-GPB_circling_earth.jpg", members:["Cavaleiro Negro","Motoqueiro Fantama Cosmico","Capitão America","Estigma","Capitã Carter"], attackers:[{name:"Mercenarios Pago", pct:0},{name:"Thanos e Gladiador", pct:0},{name:"Imortais Quasar", pct:0},{name:"Força V3", pct:0}]},
+  { id:"Força V", name:"Força V", tags:["Sinergia", "Bio"], description:"Cinco heróis, uma força imparável!.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Vespa","Coração de Ferro"], attackers:[{name:"Cabala Odin Mefisto", pct:0}]},
+  { id:"Knowhere", name:"Knowhere", tags:["Cósmico", "Sinergia"], description:"No vazio do cosmos, somos tudo e nada.", image:"https://upload.wikimedia.org/wikipedia/pt/0/0e/Rocket_Raccoon.jpg", members:["Nova","Korg","Cosmo","Thor","Star lord Aniquilação"], attackers:[{name:"Imortais Vespa", pct:0},{name:"Força V", pct:0}]},
+  { id:"UCM Prof X", name:"UCM Prof X", tags:["Sinergia", "Controle"], description:"Mente, poder e ciêcia unidos pelo destino do universo.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Senhor Fantastico UCM","Mulher Invisivel UCM","Tocha Humana","Professor X"], attackers:[{name:"UCM Prof X", pct:0}]},
+  { id:"UCM Prof X Odin", name:"UCM Prof X Odin", tags:["Sinergia", "Controle", "Cósmico"], description:"Quando mente, ciência e divindade se unem, o impossivel se curva.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Senhor Fantastico UCM","Mulher Invisivel UCM","Professor X","Odin"], attackers:[{name:"Prof X Quasar Odin Apo Ares", pct:0}]},
+  { id:"UCM Prof X Knul", name:"UCM Prof X Knul", tags:["Sinergia", "Controle", "Cósmico"], description:"Luz, mente e trevas em um só propósito: dominar o cosmos.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Senhor Fantastico UCM","Mulher Invisivel UCM","Professor X","Knul"], attackers:[{name:"UCM Prof X Emma", pct:0}]},
+  { id:"Sociedade Aranha Wheave", name:"Sociedade Aranha Wheave", tags:["Bio", "Esquiva"], description:"Unidos pela teia, imparáveis na batalha.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Spider Wheave","Noir","Pavitr","","Peni Parker"], attackers:[{name:"Mente Coletiva Skrul/Knul", pct:0},{name:"Mercenarios Pago ou com Apo", pct:0},{name:"Imortais Dormu/Quasar", pct:0},{name:"Força V", pct:0},{name:"Poderosos Vingadores", pct:0}]},
+  { id:"Aniquiladores Ares", name:"Aniquiladores Ares", tags:["Cósmico", "Dano"], description:"Força divina e destruição implacável em um só golpe.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Ares","Gorr","Ultimus"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Cabala Skrul Emma", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Imortais Ares", pct:0},{name:"Astral Mefisto", pct:0}]},
+  { id:"Mente Coletiva Knul", name:"Mente Coletiva Knul", tags:["Bio", "Sustentação", "Cósmico"], description:"Uma Consciência sombria, espalhando caos pelo universo.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Knul","Cavaleiro do Vazio","Duende vermelho","Gwenon","Carnage"], attackers:[{name:"Iluminati", pct:0},{name:"Imortais Dormu/Apo/Knul/Odin", pct:0},{name:"Força V3 Skrul", pct:0},{name:"UCM", pct:0}]},
+  { id:"Mente Coletiva Knul Gorr", name:"Mente Coletiva Knul Gorr", tags:["Bio", "Sustentação", "Cósmico"], description:"A escuridão pensa, os Deuses caem, o universo silencia.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Cavaleiro do vazio","Duende Vermelho","Gwenon","Knul","Gorr"], attackers:[{name:"Iluminati Skrul/Odin", pct:0},{name:"Imortais Odin/Quasar", pct:0},{name:"Mente Coletiva Quasar", pct:0}]},
+  { id:"Astral Knul Cav Negro", name:"Astral Knul Cav Negro", tags:["Místico", "Controle", "Cósmico"], description:"Das sombras do cosmos nasce o poder absoluto.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Anciã","Shadowking","Emma Frost X","Knul","Cavalheiro Negro"], attackers:[{name:"UCM Quasar", pct:0}]},
+  { id:"UCM Odin", name:"UCM Odin", tags:["Sinergia", "Cósmico"], description:"Ciência, poder e divindade unidos para proteger os nove reinos.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Fantastic_Four_logo_%28blue_and_white%29.svg/250px-Fantastic_Four_logo_%28blue_and_white%29.svg.png", members:["Franklin Richards","Mulher Invisivel UCM","Senhor Fantastico UCM","Tocha Humana","Odin"], attackers:[{name:"UCM Quasar Emma", pct:0}]},
+  { id:"Tropa Alfa Ares", name:"Tropa Nova Ares", tags:["Mutante", "Dano"], description:"A fúria dos Deuses com o poder das estrelas.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Solaris","Ares"], attackers:[{name:"Mercenarios Pagos", pct:0},{name:"Fora do Tempo", pct:0},{name:"Liberdade", pct:0},{name:"Thunderbolts", pct:0},{name:"Perseguidores Noturno", pct:0}]},
+  { id:"Tropa Alfa Skrul", name:"Tropa Nova Skrul", tags:["Mutante", "Controle"], description:"Quando a Força estelar encontra a astúcia das sombras.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Solaris","Skrul"], attackers:[{name:"Mercenarios Pago", pct:0},{name:"Imortais Ares/Doom/Mefisto/Knul/Quasar", pct:0}]},
+  { id:"X-tremo Vampira", name:"X-tremo Vampira", tags:["Mutante", "Dano", "Sustentação"], description:"Poder roubado, força sem limites.", image:"https://upload.wikimedia.org/wikipedia/pt/a/ac/Gambit.jpg", members:["Noturno","Gambit","Forge","Mancha Solar","Vampira"], attackers:[{name:"Gama", pct:0},{name:"Def Sec Apo ou Def Sec Omega Knul", pct:0},{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Cabala Kang Apo", pct:0},{name:"Força V", pct:0},{name:"Liberdade", pct:0},{name:"UCM", pct:0}]},
+  { id:"Sociedade Aranha Quasar", name:"Sociedade Aranha Quasar", tags:["Bio", "Esquiva", "Cósmico"], description:"Teias e energia cósmica unidas contra qualquer ameaça.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Quasar","Noir","Pavitr","","Peni Parker"], attackers:[{name:"Mercenarios Pagos", pct:0}]},
+  { id:"Aniquiladores Odin", name:"Aniquiladores Odin", tags:["Cósmico", "Dano"], description:"Força imortal e fúria divina em cada golpe.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Odin","Gorr","Ultimus"], attackers:[{name:"Astral Mefisto", pct:0},{name:"Odin Quasar Blaastar Omega Prof X", pct:0}]},
+  { id:"Aniquiladores Odin Mot Cos", name:"Aniquiladores Odin Mot Cos", tags:["Cósmico", "Dano"], description:"Divindade, destruição e velocidade imparável pelo universo.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Odin","Gorr","Motoqueiro Cosmico"], attackers:[{name:"Força V Mefisto", pct:0},{name:"Prof X Ares Noturno Cable Polaris", pct:0}]},
+  { id:"Orquidea Dormu", name:"Orquidea Dormu", tags:["Tech", "Anti-Mutante", "Místico"], description:"Beleza letal e poder das trevas em perfeita harmonia.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nim-logo.png/330px-Nim-logo.png", members:["Nimrod","Lady Letal","Sentinela","Sentinela Omega","Dormu"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Iluminati", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Fora do Tempo Area", pct:0},{name:"Imortais Wheave/Ares", pct:0},{name:"Perseguidores Noturno ou com Apo", pct:0}]},
+  { id:"Orquidea Mefisto", name:"Orquidea Mefisto", tags:["Tech", "Anti-Mutante", "Místico"], description:"Charme mortal, maldade eterna.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nim-logo.png/330px-Nim-logo.png", members:["Nimrod","Lady Letal","Sentinela","Sentinela Omega","Mefisto"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Cabala Apo Knul", pct:0},{name:"Mercenarios Pago Odin", pct:0},{name:"Aniquiladores Odin/Skrul Knul/Mefisto Knul", pct:0},{name:"Astral Quasar", pct:0},{name:"Perseguidores Noturno Knul", pct:0}]},
+  { id:"Astral Mefisto", name:"Astral Mefisto", tags:["Místico", "Controle"], description:"Poder cósmico e maldade infernal unidos.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Anciã","Shadowking","Emma Frost X","Mefisto","Doutor Destino"], attackers:[{name:"Cabala Apo Knul", pct:0},{name:"Mercenarios Pago Quasar", pct:0},{name:"Imortais Quasar/Knul", pct:0},{name:"Astral Knul", pct:0}]},
+  { id:"Astral Odin", name:"Astral Odin", tags:["Místico", "Controle", "Cósmico"], description:"Sabedoria celestial e poder cósmico guiando os Deuses e as estrelas.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg/250px-Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg", members:["Anciã","Shadowking","Emma Frost X","Mefisto","Doutor Destino"], attackers:[{name:"Força Fenix Mefisto Tempestade Noturno", pct:0}]},
+  { id:"Perseguidores Noturno Odin", name:"Perseguidores Noturno Odin", tags:["Místico", "Sustentação", "Cósmico"], description:"Caçadores das sombras abençoados pelo poder dos Deuses.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Odin","Homem Coisa","Agatha Harkness"], attackers:[{name:"Imortais e Knul", pct:0},{name:"Força V Odin", pct:0}]},
+  { id:"Piratas Sideral Odin", name:"Piratas Sideral Odin", tags:["Cósmico", "Dano"], description:"Saqueando estrelas com a fúria dos Deuses.", image:"https://static.wikia.nocookie.net/xmen-comics/images/a/a4/Hellions_Vol_1_4_Textless.jpg/revision/latest/smart/width/250/height/250?cb=20200619011935&path-prefix=pt-br", members:["Hoaward o pato","lilandra","havok","Groot","Odin"], attackers:[{name:"Força V", pct:0}]},
+  { id:"Perseguidores Noturno Mefisto", name:"Perseguidores Noturno Mefisto", tags:["Místico", "Sustentação"], description:"Das trevas viemos, com o inferno ao nosso lado.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Mefisto","Homem Coisa","Agatha Harkness"], attackers:[{name:"Cabala Apo Knul", pct:0},{name:"Mercenarios Pago Knul", pct:0},{name:"Mente Coletiva Knul", pct:0},{name:"Aniquiladores Knul/Knul Skrul", pct:0},{name:"Imortais Quasar", pct:0},{name:"Força fenix Odin Quasar Knul", pct:0},{name:"UCM OU UCM Odin", pct:0},{name:"Odin Quasar Ares Wheave 2099", pct:0}]},
+  { id:"Infestação Escorpião", name:"Infestação Escorpião", tags:["Bio", "Debuff"], description:"Veneno letal, e caos multiplicado em cada ataque.", image:"https://preview.redd.it/37ighsq9jr031.jpg?auto=webp&s=5b336efab8ddb4a717cf1cf0479e143720c50252", members:["Big Time","Escorpião","Viuva Negra","Homem Formiga","Jaqueta Amarela"], attackers:[{name:"Knowhere", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais Quasar/Blaastar Dormu", pct:0},{name:"Força V", pct:0},{name:"Insiduosos Shocker Lagarto/Shocker Duende Classico", pct:0}]},
+  { id:"Força Fênix Mutantes", name:"Força Fênix Mutantes", tags:["Mutante", "Dano", "Controle"], description:"Renascendo das cinzas, poder ilimitado em nossas maõs.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Nuremberg_chronicles_-_Phoenix_%28CIIIIv%29.jpg/250px-Nuremberg_chronicles_-_Phoenix_%28CIIIIv%29.jpg", members:["Fênix","Omega","Mutantes"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Novos Vingadores", pct:0},{name:"Sexteto de Guerra", pct:0},{name:"Sociedade Aranha Skrul", pct:0},{name:"Mercenarios Pago", pct:0},{name:"Fora do Tempo", pct:0},{name:"Imortais Treinador Gorr", pct:0},{name:"Iluminati", pct:0},{name:"Orquidea", pct:0},{name:"Força V", pct:0},{name:"Perseguidores Noturno", pct:0},{name:"UCM", pct:0}]},
+  { id:"Força V Odin Mot Cos", name:"Força V Odin Mot Cos", tags:["Sinergia", "Cósmico"], description:"Justiça divina guiada pelo fogo das estrelas.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Odin","Motoqueiro Cosmico"], attackers:[{name:"Força V Mefisto Emma", pct:0}]},
+  { id:"Força V Odin Mefisto", name:"Força V Odin Mefisto", tags:["Sinergia", "Cósmico", "Místico"], description:"Entre o divino e o inferno, o poder absoluto desperta.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Odin","Mefisto"], attackers:[{name:"Força V Odin Prof X", pct:0}]},
+  { id:"Força V Odin Skrul", name:"Força V Odin Skrul", tags:["Sinergia", "Cósmico", "Controle"], description:"Deuses e metamorfos unidos pela conquista cósmica.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Coat_of_arms_of_the_Brazilian_Air_Force.svg/250px-Coat_of_arms_of_the_Brazilian_Air_Force.svg.png", members:["Kahhori","Medusa","Ms. Marvel Classica","Odin","Skrul"], attackers:[{name:"UCM Knul Gorr", pct:0},{name:"UCM", pct:0}]},
+  { id:"Sociedade Aranha Mefisto", name:"Sociedade Aranha Mefisto", tags:["Bio", "Esquiva", "Místico"], description:"Teias do inferno tecidas com almas e destruição.", image:"https://upload.wikimedia.org/wikipedia/pt/5/52/Mulher-Aranha_%28Gwen_Stacy%29_em_Aranhaverso_2.png", members:["Mefisto","Noir","Pavitr","","Peni Parker"], attackers:[{name:"Mente Coletiva Knul", pct:0}]},
+  { id:"Iluminati Mefisto", name:"Iluminati Mefisto", tags:["Tech", "Controle", "Místico"], description:"Conhecimento proibido e poder infernal moldando o destino.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/9/91/New_Avengers_Vol_3_31.jpg/250px-New_Avengers_Vol_3_31.jpg", members:["Hank Pym","Raio Negro","Pantera Shuri","Senhor Fantastico","Capitão Britania"], attackers:[{name:"Astral Knul sem Sk", pct:0}]},
+  { id:"Aniquiladores Mefisto", name:"Aniquiladores Mefisto", tags:["Cósmico", "Dano", "Místico"], description:"A destruição ganhou uma alma... e ela veio do inferno.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Thanos_por_Jim_Starlin.png/330px-Thanos_por_Jim_Starlin.png", members:["Thanos","Gladiador","Mefisto","Gorr","Ultimus"], attackers:[{name:"Mente Coletiva Knul", pct:0},{name:"Fora do Tempo Knul", pct:0},{name:"UCM", pct:0}]},
+  { id:"Sexteto de Guerra", name:"Sexteto de Guerra", tags:["Bio", "Tech"], description:"Cinco Forças, um só propósito: conquistar pelo caos.", image:"https://upload.wikimedia.org/wikipedia/pt/b/bc/Dr._Octopus_Marvel.jpg", members:["Doctor Octopus","Vulture","Mysterio","Duende Classico","Kraven"], attackers:[{name:"Imortais Odin", pct:0},{name:"Insiduosos Gladiador Big Time", pct:0}]},
+  { id:"Mente Coletiva Skrul", name:"Mente Coletiva Skrul", tags:["Bio", "Sustentação", "Controle"], description:"Uma consciêcia, mil rostos, um império invisivel.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Venom_cosplay_madrid.jpg/250px-Venom_cosplay_madrid.jpg", members:["Skrul","Cavaleiro do Vazio","Carnage","Duende Vermelho","Gwenon"], attackers:[{name:"Mercenarios Pagos", pct:0},{name:"Imortais Dormu", pct:0},{name:"Força V Skrul", pct:0}]},
+  { id:"Bifrost Dormu", name:"Bifrost Dormu", tags:["Místico", "Cósmico"], description:"A ponte entre reinos agora leva direto ao inferno.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Ring17.jpg/250px-Ring17.jpg", members:["Vahl","Dormammu","Bill Raio","Loki Teen","Sylvie"], attackers:[{name:"Gama", pct:0},{name:"Knowhere", pct:0},{name:"Def Sec Eternos", pct:0},{name:"Imortais Vahl", pct:0}]},
+  { id:"Tropa Alfa Skrul Mefisto", name:"Tropa Alfa Skrul Mefisto", tags:["Mutante", "Controle", "Místico"], description:"Mutação, disfarce e inferno unidos sob uma mesma bandeira.", image:"https://upload.wikimedia.org/wikipedia/pt/thumb/3/31/TrpAlfa.jpg/250px-TrpAlfa.jpg", members:["Estrela Polar","Sasquatch","Guardião","Skrul","Mefisto"], attackers:[{name:"Força V Odin Quasar", pct:0}]},
+  { id:"X-tremo Mefisto", name:"X-tremo Mefisto", tags:["Mutante", "Dano", "Místico"], description:"Poder sem limites, forjado nas chamas do inferno.", image:"https://upload.wikimedia.org/wikipedia/pt/a/ac/Gambit.jpg", members:["Noturno","Gambit","Forge","Mancha Solar","Mefisto"], attackers:[{name:"Mente Coletiva Knul", pct:0}]},
+  { id:"Perseguidores Noturno Mefisto Ares", name:"Perseguidores Noturno Mefisto Ares", tags:["Místico", "Sustentação", "Dano"], description:"Das trevas e da guerra nasce o verdadeiro terror.", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Mercury%2C_Venus_and_the_Moon_Align.jpg/250px-Mercury%2C_Venus_and_the_Moon_Align.jpg", members:["Blade","Profana","Homem Coisa","Mefisto","Ares"], attackers:[{name:"Skrul Apo Odin Quasar Agatha", pct:0}]},
 
 
 ];
@@ -1121,8 +1353,8 @@ function selectTeam(id){
 
 function getColorForPower(power) {
     const p = parseInt(power);
-    if (p >= 85) return '#2ecc71'; // Verde forte (Alta chance)
-    if (p >= 75) return '#ffd166'; // Amarelo/Laranja (Média chance)
+    if (p >= 66) return '#2ecc71'; // Verde forte (Alta chance)
+    if (p >= 45) return '#ffd166'; // Amarelo/Laranja (Média chance)
     return '#f75555'; // Vermelho (Baixa chance)
 }
 
@@ -1201,10 +1433,8 @@ function showAttackers(team){
   const atk=team.attackers||[];
   const bars = atk.map(a=>{
     const color=a.pct>=66?'#2ecc71':(a.pct>=45?'#ffd166':'#f75555');
-    // Novo layout do item de ataque para se adequar ao grid de 2 colunas
     return `<li class="attack-item"><div class="attacker-name">${a.name}</div><div class="percent" style="background:${color};color:#071022">${a.pct}%</div></li>`;
   }).join('');
-  // Aplica a classe .attack-list que usa grid/flex para 2 colunas
   contentInner.innerHTML=`<h3>${team.name} — Ataques</h3><ul class="attack-list">${bars}</ul>`;
 }
 
@@ -1221,18 +1451,18 @@ function showNotes(team){
 }
 
 // =======================================================
-// SIMULADOR DE BATALHAS (LÓGICA MSF - MANTIDO IDÊNTICO)
+// SIMULADOR DE BATALHAS (LÓGICA MSF - MELHORADA E INTELIGENTE)
 // =======================================================
 
-const attackerTeams = teamsData.map(t => ({ id: t.id, name: t.name, powerScore: t.powerScore || 80 }));
+const attackerTeams = teamsData.map(t => ({ id: t.id, name: t.name, powerScore: t.powerScore || 80, tags: t.tags || [] }));
 
 const warRooms = [
-  { name: "Sem Bônus", modifier: 1.0 },
-  { name: "Hangar (+Deflect)", modifier: 1.05 },
-  { name: "Carga (+Vida/Dano Defensor)", modifier: 1.15 },
-  { name: "Ponte (+Contra-Ataque)", modifier: 1.1 },
-  { name: "Enfermaria (+Cura Defensor)", modifier: 1.1 },
-  { name: "Arsenal (+Dano/Vida Atacante - BOOSTER)", modifier: 0.9 }
+  { name: "Sem Bônus", modifier: 1.0, tagBonus: null },
+  { name: "Hangar (+Deflexão)", modifier: 1.05, tagBonus: { tag: 'Tech', value: 1.05 } },
+  { name: "Carga (+Vida/Dano Defensor)", modifier: 1.15, tagBonus: { tag: 'Bio', value: 1.05 } },
+  { name: "Ponte (+Contra-Ataque)", modifier: 1.1, tagBonus: { tag: 'Habilidade', value: 1.05 } },
+  { name: "Enfermaria (+Cura Defensor)", modifier: 1.1, tagBonus: { tag: 'Sustentação', value: 1.1 } },
+  { name: "Arsenal (+Dano/Vida Atacante - BOOSTER)", modifier: 0.9, tagBonus: null }
 ];
 
 function renderSimulator() {
@@ -1242,11 +1472,10 @@ function renderSimulator() {
   }
 
   const defensePower = currentDefenseTeam.powerScore || 80;
-  // Filtra o time de defesa atual para não ser selecionado como atacante
   const availableAttackers = attackerTeams.filter(t => t.id !== currentDefenseTeam.id);
 
   const teamOptions = availableAttackers.map(t =>
-    `<option value="${t.id}" data-power="${t.powerScore || 80}">${t.name} (Poder: ${t.powerScore || 80}%)</option>`
+    `<option value="${t.id}">${t.name} (Poder: ${t.powerScore || 80}%)</option>`
   ).join('');
 
   const roomOptions = warRooms.map((r, index) =>
@@ -1271,8 +1500,13 @@ function renderSimulator() {
 
     <div id="simResultArea" class="sim-result" style="display:none;">
       <h4>Resultado da Batalha</h4>
-      <div id="winChance">...</div>
-      <p id="matchupHint"></p>
+      <div class="sim-result-visual">
+        <div id="winChanceValue" class="win-chance-value">--%</div>
+        <div class="win-chance-bar-container">
+            <div id="winChanceBar" class="win-chance-bar"></div>
+        </div>
+      </div>
+      <div id="battleBreakdown" class="battle-breakdown"></div>
     </div>
   `;
 
@@ -1283,8 +1517,9 @@ function runSimulation() {
   const attackerSelect = $('#attackerSelect');
   const roomSelect = $('#roomSelect');
   const resultArea = $('#simResultArea');
-  const winChanceEl = $('#winChance');
-  const hintEl = $('#matchupHint');
+  const winChanceValueEl = $('#winChanceValue');
+  const winChanceBarEl = $('#winChanceBar');
+  const breakdownEl = $('#battleBreakdown');
 
   if (!currentDefenseTeam) return;
 
@@ -1292,53 +1527,70 @@ function runSimulation() {
   const selectedRoomIndex = parseInt(roomSelect.value);
 
   const attacker = attackerTeams.find(t => t.id === selectedAttackerId);
+  const defender = currentDefenseTeam;
   const room = warRooms[selectedRoomIndex];
 
-  // 1. Obtém o Poder Base dos Times (o valor de powerScore que definimos)
+  let breakdownHTML = `Analisando <strong>${attacker.name}</strong> vs <strong>${defender.name}</strong>...<br>`;
+  let winChance = 50;
+
   const attackerPower = attacker.powerScore;
-  const defensePower = currentDefenseTeam.powerScore;
+  let defensePower = defender.powerScore;
+  const powerRatio = attackerPower / defensePower;
+  const powerBonus = (powerRatio - 1) * 35;
+  winChance += powerBonus;
+  breakdownHTML += ` • Vantagem de Poder: <span class="${powerBonus >= 0 ? 'good' : 'bad'}">${powerBonus.toFixed(1)}%</span><br>`;
 
-  // 2. Aplica o Modificador de Sala (War Room) ao Defensor
-  const modifiedDefensePower = defensePower * room.modifier;
+  let roomModifier = room.modifier;
+  let roomBonusText = '';
+  if (room.tagBonus && defender.tags && defender.tags.includes(room.tagBonus.tag)) {
+    roomModifier *= room.tagBonus.value;
+    roomBonusText = ` (Bônus extra para ${room.tagBonus.tag})`;
+  }
+  const roomPenalty = (1 - roomModifier) * 20;
+  winChance += roomPenalty;
+  breakdownHTML += ` • Bônus de Sala (${room.name}${roomBonusText}): <span class="${roomPenalty >= 0 ? 'good' : 'bad'}">${roomPenalty.toFixed(1)}%</span><br>`;
 
-  // 3. Calcula a Razão de Poder (Power Ratio)
-  const powerRatio = attackerPower / modifiedDefensePower;
+  let synergyBonus = 0;
+  const attackerTags = attacker.tags || [];
+  const defenderTags = defender.tags || [];
 
-  // 4. Fórmula Base de Chance de Vitória
-  // Base de 60% se o poder for igual (1.0 * 50 + 10) - Simula a vantagem natural do Atacante no MSF
-  let winChance = (powerRatio * 50) + 10;
-  let hintText = `Resultado base calculado pela Razão de Poder (${(powerRatio * 100).toFixed(0)}%) e Bônus de Sala.`;
-
-  // 5. Sinergia e Hard Counters (Ajuste MSF)
-  if (attacker.id === "Iluminati" && currentDefenseTeam.id === "Thunderbolts") {
-      winChance += 25;
-      hintText = `Bônus de Sinergia: ${attacker.name} é um forte "hard counter" contra ${currentDefenseTeam.name}.`;
-  } else if (attacker.id === "Thunderbolts" && currentDefenseTeam.id === "Clube do Inferno") {
-      winChance += 20;
-      hintText = `Bônus de Sinergia: Time com alta capacidade de controle (CC) é eficaz contra times de controle como ${currentDefenseTeam.name}.`;
-  } else if (attacker.id === "Amaldicoados" && currentDefenseTeam.id === "Mente Coletiva") {
-      winChance += 10;
-      hintText = `Bônus de Sinergia: A alta geração de bônus do ${attacker.name} ajuda a lidar com a resistência de ${currentDefenseTeam.name}.`;
-  } else if (powerRatio < 0.8) {
-      // Se o atacante for muito mais fraco
-      winChance -= 10;
-      hintText = `Penalidade: O poder do atacante é significativamente menor que o defensor, mesmo com a vantagem da War.`;
+  if (attackerTags.includes('Controle') && (defenderTags.includes('Dano') || defenderTags.includes('Bio'))) {
+    synergyBonus += 8;
+  }
+  if (attackerTags.includes('Anti-Mutante') && defenderTags.includes('Mutante')) {
+    synergyBonus += 15;
+  }
+  if (attackerTags.includes('Tech') && defenderTags.includes('Místico')) {
+    synergyBonus += 5;
+  }
+  if (defenderTags.includes('Sustentação') && attackerTags.includes('Dano')) {
+      synergyBonus -= 5;
+  }
+  if (defenderTags.includes('Esquiva') && !attackerTags.includes('Controle')) {
+      synergyBonus -= 7;
   }
 
-  // 6. Limites (Min 5%, Max 95%)
+  if (synergyBonus !== 0) {
+      winChance += synergyBonus;
+      breakdownHTML += ` • Vantagem de Sinergia: <span class="${synergyBonus > 0 ? 'good' : 'bad'}">${synergyBonus.toFixed(1)}%</span><br>`;
+  } else {
+      breakdownHTML += ` • Vantagem de Sinergia: Nenhuma vantagem clara.<br>`;
+  }
+
   winChance = Math.max(5, Math.min(95, Math.round(winChance)));
 
-  // 7. Atualiza o Resultado
   resultArea.style.display = 'block';
-  winChanceEl.textContent = `${winChance}%`;
-  hintEl.textContent = hintText;
+  resultArea.className = 'sim-result';
+  if(winChance >= 66) resultArea.classList.add('is-good');
+  else if (winChance < 45) resultArea.classList.add('is-bad');
 
-  // Define a cor de acordo com a chance
-  const color = getColorForPower(winChance);
-  winChanceEl.style.color = color;
-  winChanceEl.style.textShadow = `0 0 15px ${color}44`;
+  winChanceValueEl.textContent = `${winChance}%`;
+  breakdownEl.innerHTML = breakdownHTML;
+
+  setTimeout(() => {
+    winChanceBarEl.style.width = `${winChance}%`;
+  }, 100);
 }
-
 
 searchEl.addEventListener('input',e=>{
   const v=e.target.value.trim().toLowerCase();
@@ -1349,7 +1601,6 @@ searchEl.addEventListener('input',e=>{
 
 // EXECUÇÃO INICIAL
 renderTeams(teamsData);
-// Usa o primeiro time na lista, garantindo que ele tenha dados de 'strategy' para a demonstração
 selectTeam('vigilantes');
 
 
@@ -1362,23 +1613,18 @@ selectTeam('vigilantes');
   if(form){
     form.addEventListener('submit', function(e){
       e.preventDefault();
-      // Simulação de envio: aqui você pode integrar com seu backend ou serviço de e-mail
       const name = document.getElementById('c_name').value.trim();
       const email = document.getElementById('c_email').value.trim();
       const msg = document.getElementById('c_message').value.trim();
 
-      // Exibe feedback amigável
       feedback.style.display = 'block';
       feedback.style.color = 'var(--muted)';
       feedback.textContent = 'Enviando mensagem...';
 
-      // Simula atraso curto para melhor UX (sem calls externas)
       setTimeout(()=>{
-        feedback.style.color = 'var(--accent-2)';
-        feedback.textContent = '✅ Mensagem enviada com sucesso! Responderei pelo WhatsApp ou e-mail em breve.';
-        // limpa campos
+        feedback.style.color = '#2ecc71';
+        feedback.textContent = '✅ Mensagem enviada com sucesso! Responderei em breve.';
         form.reset();
-        // após um tempo, esconde a mensagem
         setTimeout(()=>{ feedback.style.display='none'; }, 4500);
       },700);
     });
@@ -1386,11 +1632,7 @@ selectTeam('vigilantes');
 
   if(clearBtn){
     clearBtn.addEventListener('click', ()=>{
-      if(confirm('Limpar todos os campos do formulário?')){
-        document.getElementById('c_name').value='';
-        document.getElementById('c_email').value='';
-        document.getElementById('c_message').value='';
-      }
+        form.reset();
     });
   }
 })();
@@ -1407,7 +1649,6 @@ selectTeam('vigilantes');
     let startX;
     let scrollLeft;
 
-    // Funcionalidade de arrastar com o mouse
     carousel.addEventListener('mousedown', (e) => {
         isDown = true;
         carousel.classList.add('active');
@@ -1426,13 +1667,11 @@ selectTeam('vigilantes');
         if (!isDown) return;
         e.preventDefault();
         const x = e.pageX - carousel.offsetLeft;
-        const walk = (x - startX) * 2; // Multiplicador para acelerar o arraste
+        const walk = (x - startX) * 2;
         carousel.scrollLeft = scrollLeft - walk;
     });
 
-    // Funcionalidade dos botões
     const scrollAmount = () => {
-        // Calcula a largura de um slide + gap
         const slide = carousel.querySelector('.carousel-slide');
         return slide ? slide.offsetWidth + 15 : 300;
     };
@@ -1445,15 +1684,13 @@ selectTeam('vigilantes');
         carousel.scrollLeft += scrollAmount();
     });
 
-    // Opcional: Desabilitar botões no início/fim (para navegadores sem scroll-snap)
     const updateButtons = () => {
         const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
         prevBtn.disabled = carousel.scrollLeft <= 0;
-        nextBtn.disabled = carousel.scrollLeft >= maxScrollLeft - 1; // -1 para margem de erro
+        nextBtn.disabled = carousel.scrollLeft >= maxScrollLeft - 1;
     };
 
     carousel.addEventListener('scroll', updateButtons);
-    // Chama uma vez no início para setar o estado inicial
     updateButtons();
 
 })();
