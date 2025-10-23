@@ -61,13 +61,38 @@ body{
   text-shadow:0 0 16px rgba(11,99,209,0.9), 0 0 8px var(--accent-2), 0 0 25px rgba(255,209,102,0.7);
 }
 
-.navbar{display:flex;gap:12px;flex-wrap:wrap;}
+/* === MODIFICAÇÃO AQUI === */
+.navbar{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  
+  /* --- NOVOS ESTILOS --- */
+  /* Coloca um gradiente escuro sobre a imagem para legibilidade */
+  background-image: linear-gradient(rgba(11, 18, 32, 0.7), rgba(11, 18, 32, 0.7)), url('IMG/vby0zhmx5r5xn5spfnbn5yka1v_image.jpg');
+  background-size: cover;       /* Faz a imagem cobrir todo o espaço */
+  background-position: center;  /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  
+  padding: 10px 16px; /* Adiciona um enchimento interno */
+  border-radius: 10px; /* Arredonda as bordas */
+  border: 1px solid var(--plasma-border); /* Adiciona uma borda sutil */
+  box-shadow: 0 0 15px rgba(11, 99, 209, 0.3); /* Adiciona um brilho */
+}
+
+/* === E MODIFICAÇÃO AQUI === */
 .nav-item{
   position:relative; padding:10px 16px; border-radius:8px;
   color:var(--text); font-weight:600; font-size:15px;
   background:transparent; border:1px solid transparent; cursor:pointer;
   transition:all .3s ease; overflow:hidden;
+  
+  /* --- NOVO ESTILO --- */
+  /* Adiciona uma sombra ao texto para destacar do fundo */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); 
 }
+/* === FIM DAS MODIFICAÇÕES === */
+
 .nav-item::after {
   content: ''; position: absolute; bottom: 0; left: 50%;
   transform: translateX(-50%); width: 0; height: 2px;
