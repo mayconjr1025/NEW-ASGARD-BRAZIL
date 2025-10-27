@@ -299,46 +299,149 @@ section{padding:20px 18px;scroll-margin-top:100px;}
 .stat-content .power-rating { color: var(--power-color); text-shadow:0 0 8px var(--power-color); }
 .stat-content .strategy-text { font-size: 14px; font-style: italic; color: var(--muted); }
 
-/* ===== SIMULADOR ===== */
-#simulatorContainer{ padding:20px; }
-.sim-controls, .sim-result{
-  margin-top:15px; padding:15px; border-radius:8px;
-  border:1px solid rgba(255,255,255,0.05);
+/* ===== SIMULADOR (ESTILOS MELHORADOS) ===== */
+#simulatorContainer { 
+  padding: 20px; 
+  background: var(--plasma-bg);
+  border: 1px solid var(--plasma-border);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(11,99,209,0.2);
 }
-.sim-controls{ background:rgba(11,99,209,0.05); }
-.sim-controls select, .sim-controls input[type="number"] {
-  width:100%; padding:8px; border-radius:6px;
-  background:rgba(0,0,0,0.3); color:var(--text);
-  border:1px solid var(--accent); margin-bottom:10px;
-  font-family:inherit;
+
+.sim-header {
+  text-align: center;
+  margin-bottom: 25px;
 }
-.sim-controls button{
-  width:100%; padding:10px; border:none; border-radius:8px;
-  background:var(--accent-2); color:#071022; font-weight:700;
-  cursor:pointer; transition:all .2s;
+.sim-header h3 {
+  font-size: 24px;
+  color: var(--accent-2);
+  margin-bottom: 5px;
+  text-shadow: 0 0 8px rgba(255,209,102,0.4);
 }
-.sim-controls button:hover{ background:var(--accent); color:var(--text); }
+.sim-header p {
+  font-size: 16px;
+  color: var(--muted);
+}
+.sim-header p strong {
+  color: var(--text);
+}
+
+.sim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
+}
+
+.sim-controls-wrapper, .sim-result-wrapper {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.sim-controls-wrapper h4, .sim-result-wrapper h4 {
+  color: var(--accent-2);
+  font-size: 18px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--plasma-border);
+}
+
+.sim-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Espaço entre label e input */
+}
+
+.sim-controls strong {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 0; /* Ajustado */
+}
+
+.sim-controls input[type="number"],
+.sim-controls input[type="text"] {
+  width: 100%;
+  padding: 12px; /* Aumentado padding */
+  border-radius: 8px; /* Cantos arredondados */
+  background: rgba(0,0,0,0.3);
+  color: var(--text);
+  border: 1px solid var(--plasma-border);
+  margin-bottom: 15px; /* Espaço entre campos */
+  font-family: inherit;
+  font-size: 15px;
+  transition: all .3s ease;
+}
+
+.sim-controls input[type="number"]::placeholder,
+.sim-controls input[type="text"]::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.sim-controls input[type="number"]:focus,
+.sim-controls input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(11, 99, 209, 0.1);
+  box-shadow: 0 0 15px rgba(11,99,209,0.5), 0 0 5px rgba(11,99,209,0.3) inset;
+}
+
+.sim-controls button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-2);
+  color: #071022;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 15px rgba(255,209,102,0.3);
+  margin-top: 5px; /* Espaço acima do botão */
+}
+.sim-controls button:hover {
+  background: var(--accent);
+  color: var(--text);
+  box-shadow: 0 4px 20px rgba(11,99,209,0.5);
+  transform: translateY(-2px);
+}
+
 .sim-result {
   --result-color: var(--accent-2);
   background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-  border-color: var(--result-color);
+  border: 1px dashed var(--result-color); /* Mudado para dashed */
+  border-radius: 8px;
+  padding: 15px;
   box-shadow: 0 0 15px color-mix(in srgb, var(--result-color), transparent 70%);
   transition: all .4s ease-out;
+  min-height: 150px; /* Altura mínima para alinhamento */
 }
 .sim-result.is-good { --result-color: #2ecc71; }
 .sim-result.is-bad { --result-color: #f75555; }
-.sim-result h4 {
-  color: var(--result-color); margin-bottom: 15px; text-align: center;
-  font-size: 18px; text-shadow: 0 0 8px color-mix(in srgb, var(--result-color), transparent 50%);
-}
+
+/* Remove o h4 extra do .sim-result original */
+.sim-result h4 { display: none; }
+
 .battle-breakdown {
-  font-size: 14px; line-height: 1.6; color: var(--muted);
-  background: var(--glass); padding: 12px; border-radius: 6px;
-  text-align: center;
+  font-size: 15px; /* Fonte aumentada */
+  line-height: 1.6;
+  color: var(--muted);
+  padding: 0; /* Padding já está no pai */
+  border-radius: 6px;
+  text-align: left; /* Alinhado à esquerda */
 }
 .battle-breakdown strong { color: var(--text); font-weight: 600; }
-.battle-breakdown .good { color: #2ecc71; }
-.battle-breakdown .bad { color: #f75555; }
+.battle-breakdown .good { color: #2ecc71; text-shadow: 0 0 8px #2ecc71; }
+.battle-breakdown .bad { color: #f75555; text-shadow: 0 0 8px #f75555; }
+.battle-breakdown hr {
+  border: 0;
+  height: 1px;
+  background: var(--plasma-border);
+  margin: 15px 0;
+}
 
 /* ===== META, RECURSOS, CONTATO, FOOTER ===== */
 .meta-container{padding: 20px;}
@@ -501,6 +604,18 @@ footer a:hover {color: var(--accent-2);}
   color: var(--bg);
 }
 
-@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start;gap:10px}.contact-grid{grid-template-columns:1fr}}
-@media (max-width: 1024px) {.carousel-slide {flex-basis: calc(50% - 8px);}}
-@media (max-width: 768px) {.carousel-slide {flex-basis: calc(100% - 10px);} .carousel-wrapper {padding: 0 35px;} .carousel-btn.prev {left: -10px;} .carousel-btn.next {right: -10px;}}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .topbar{flex-direction:column;align-items:flex-start;gap:10px}
+  .contact-grid{grid-template-columns:1fr}
+  .sim-grid {grid-template-columns: 1fr;} /* Adicionado */
+}
+@media (max-width: 1024px) {
+  .carousel-slide {flex-basis: calc(50% - 8px);}
+}
+@media (max-width: 768px) {
+  .carousel-slide {flex-basis: calc(100% - 10px);} 
+  .carousel-wrapper {padding: 0 35px;} 
+  .carousel-btn.prev {left: -10px;} 
+  .carousel-btn.next {right: -10px;}
+}
