@@ -619,3 +619,123 @@ footer a:hover {color: var(--accent-2);}
   .carousel-btn.prev {left: -10px;} 
   .carousel-btn.next {right: -10px;}
 }
+/* ===== NOVA SEÇÃO DE RECURSOS (ESTILIZADA) ===== */
+.resources-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 25px;
+}
+
+.res-category-title {
+  color: var(--accent-2);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 15px;
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.3);
+}
+
+/* CARTÕES OFICIAIS */
+.res-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.res-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--muted);
+  transition: 0.3s;
+}
+
+.res-card:hover {
+  transform: translateX(5px);
+  background: linear-gradient(90deg, rgba(11,99,209,0.15), rgba(11,99,209,0.05));
+  border-color: var(--plasma-border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.res-card:hover::before {
+  background: var(--accent-2);
+  box-shadow: 0 0 10px var(--accent-2);
+}
+
+.res-card.main-tool {
+  border: 1px solid rgba(11, 99, 209, 0.3);
+  background: linear-gradient(90deg, rgba(11,99,209,0.1), rgba(0,0,0,0.2));
+}
+.res-card.main-tool::before { background: var(--accent); }
+
+.res-icon {
+  font-size: 28px;
+  background: rgba(0,0,0,0.3);
+  width: 50px; height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.res-content h4 { color: var(--text); margin-bottom: 4px; font-size: 18px; }
+.res-content p { color: var(--muted); font-size: 13px; margin: 0; }
+.res-arrow { margin-left: auto; color: var(--accent-2); font-weight: bold; opacity: 0; transform: translateX(-10px); transition: all 0.3s; }
+.res-card:hover .res-arrow { opacity: 1; transform: translateX(0); }
+
+/* GRID DOS YOUTUBERS */
+.creators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.creator-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  padding: 12px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.creator-card:hover {
+  background: rgba(255,0,0,0.1); /* Leve tom vermelho do YouTube */
+  border-color: rgba(255,0,0,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.yt-icon {
+  color: #ff0000;
+  font-size: 18px;
+  background: #fff;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.creator-info strong { display: block; color: var(--text); font-size: 14px; }
+.creator-info small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+.creator-card:hover .creator-info strong { color: var(--accent-2); }
+
+/* Responsividade para a nova seção */
+@media(max-width: 768px){
+  .resources-wrapper { grid-template-columns: 1fr; gap: 40px; }
+  .creators-grid { grid-template-columns: 1fr 1fr; }
+}
